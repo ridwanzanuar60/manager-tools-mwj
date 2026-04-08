@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Penawaran — Accurate</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+/* ══════════════════════════════════════════════
+   SCREEN STYLES (form / input UI)
+══════════════════════════════════════════════ */
+:root {
+  --bg:#FFF8F9; --surface:#FFFCFD; --surface2:#FAE8EC;
+  --border:#F0C4CC; --accent:#C0143C; --accent2:#E8174A;
+  --gold:#E8174A; --gold-light:#FFB3C1;
+  --text:#1C1C1A; --muted:#7A5060;
+  --red:#C0392B; --red-bg:#FFF0EE; --green-bg:#FFF0F3;
+  --sh:0 2px 14px rgba(192,20,60,.08);
+  --sh-lg:0 8px 36px rgba(192,20,60,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* hide print view on screen */
+#print-view { display:none; }
+
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.app-header{background:#ffffff;border-bottom:3px solid #C0143C;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 12px rgba(0,0,0,.08);}
+.logo-area{display:flex;align-items:center;gap:10px;}
+
+.app-header h1{font-size:13px;font-weight:700;color:#1A1A2E;}
+.app-header p{font-size:10px;color:#6B7280;margin-top:1px;}
+.header-tag{background:#FFF0F3;color:#C0143C;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.05em;border:1px solid #F0C4CC;}
+
+/* LAYOUT */
+.main{max-width:860px;margin:0 auto;padding:22px 14px 80px;}
+.card{background:var(--surface);border-radius:16px;border:1px solid var(--border);margin-bottom:14px;overflow:hidden;box-shadow:var(--sh);}
+.card-head{padding:11px 18px;background:#F7F8FC;border-bottom:1.5px solid var(--border);border-left:4px solid var(--accent);display:flex;align-items:center;gap:8px;}
+.card-icon{width:25px;height:25px;background:#FFF0F3;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.card-title{font-size:10.5px;font-weight:700;color:#1A1A2E;letter-spacing:.07em;text-transform:uppercase;}
+.card-body{padding:16px 18px;}
+
+/* FORM */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.row1{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+input,select,textarea{padding:8px 11px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;font-size:13.5px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);transition:border-color .15s,box-shadow .15s;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,23,74,.1);}
+textarea{resize:vertical;min-height:56px;line-height:1.5;}
+
+/* DURATION TOGGLE */
+.dur-wrap{margin-bottom:18px;}
+.dur-toggle{display:flex;border:2px solid #DDE1EF;border-radius:12px;overflow:hidden;}
+.dur-btn{flex:1;padding:12px 8px;background:transparent;border:none;font-size:13.5px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;color:#6B7280;transition:all .18s;text-align:center;line-height:1.35;}
+.dur-btn.active{background:var(--accent);color:white;border-radius:10px;}
+.dur-btn .bdg{display:inline-block;background:#FFF0F3;color:#C0143C;font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;margin-top:4px;}
+.dur-btn.active .bdg{background:rgba(255,255,255,.18);color:white;}
+
+/* ITEM TABLE */
+.tbl{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;}
+.tbl-hd{display:grid;padding:7px 12px;background:#1A1A2E;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.04em;gap:8px;}
+.tbl-hd,.irow{grid-template-columns:minmax(0,2fr) 100px 100px 78px 30px;}
+.irow{display:grid;padding:10px 12px;border-top:1.5px solid var(--border);background:var(--surface);align-items:start;gap:8px;transition:background .1s;}
+.irow:hover{background:#F7F8FC;}
+
+.ilabel{font-size:13px;font-weight:700;color:#1A1A2E;line-height:1.3;}
+.isub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
+.ppntag{font-size:9px;font-weight:700;color:#C0143C;background:#FFE8EE;padding:1px 5px;border-radius:4px;margin-left:3px;vertical-align:middle;}
+
+.qty-r{display:flex;align-items:center;gap:5px;margin-top:7px;}
+.qty-lbl{font-size:10px;color:var(--muted);}
+.qty-c{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:7px;overflow:hidden;}
+.qbtn{width:25px;height:30px;background:var(--surface2);border:none;cursor:pointer;font-size:14px;font-weight:700;color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qbtn:hover{background:var(--border);}
+.qinp{border:none;border-left:1.5px solid var(--border);border-right:1.5px solid var(--border);border-radius:0;width:32px;text-align:center;font-weight:700;background:white;padding:0;height:30px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;}
+
+.pc{display:flex;flex-direction:column;gap:1px;padding-top:1px;}
+.ps{font-size:11px;color:var(--muted);text-decoration:line-through;}
+.pf{font-size:13.5px;font-weight:800;color:var(--accent);}
+.po{font-size:13.5px;font-weight:600;color:var(--text);}
+.psave{font-size:10px;font-weight:700;color:#C0143C;}
+.pfree{font-size:13px;font-weight:800;color:#166534;}
+
+.dw{position:relative;}
+.dw input{padding-right:22px;text-align:center;font-weight:700;}
+.dw::after{content:'%';position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);pointer-events:none;}
+
+.rm-btn{background:none;border:1.5px solid transparent;color:var(--muted);cursor:pointer;font-size:13px;padding:4px;border-radius:7px;transition:all .14s;width:30px;height:30px;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.rm-btn:hover{background:var(--red-bg);color:var(--red);border-color:#f5c6c6;}
+
+/* PICKER */
+.picker{background:var(--surface);border:1.5px solid var(--accent);border-radius:10px;margin-top:5px;overflow:hidden;box-shadow:var(--sh-lg);animation:fadeS .14s ease;}
+@keyframes fadeS{from{opacity:0;transform:translateY(-3px);}to{opacity:1;transform:none;}}
+.pi{display:block;width:100%;text-align:left;padding:10px 14px;background:none;border:none;border-bottom:1px solid var(--border);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.pi:hover{background:var(--green-bg);}
+.pi:last-child{border-bottom:none;}
+.pi-name{font-size:13px;font-weight:700;color:#1A1A2E;}
+.pi-desc{font-size:10.5px;color:var(--muted);margin-top:2px;}
+.pi-close{display:block;width:100%;padding:8px;background:var(--surface2);border:none;border-top:1.5px solid var(--border);cursor:pointer;font-size:11.5px;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;text-align:center;}
+.pi-close:hover{background:var(--border);}
+
+/* ADD BTN */
+.add-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;background:transparent;border:1.5px dashed var(--accent);border-radius:9px;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .14s;margin-top:7px;}
+.add-btn:hover{background:var(--green-bg);}
+
+.divider{font-size:10.5px;font-weight:700;color:#C0143C;text-transform:uppercase;letter-spacing:.07em;margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid #F0C4CC;}
+
+/* CUSTOM ROW */
+.crow{display:grid;grid-template-columns:minmax(0,2fr) 125px 74px 30px;gap:8px;align-items:end;margin-bottom:8px;}
+
+/* TOTAL BOX */
+.tbox{background:#1A1A2E;border-radius:13px;padding:16px 18px;margin-top:16px;color:white;}
+.tr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:13px;}
+.tr .l{color:rgba(255,255,255,.52);}
+.tr.grand{border-top:1px solid rgba(255,255,255,.16);padding-top:10px;margin-top:8px;font-size:21px;font-weight:800;}
+.tr.moeq{font-size:11.5px;margin-top:2px;margin-bottom:10px;}
+.tr.moeq .l{color:rgba(255,255,255,.4);}
+.tr.moeq .v{color:#FF8FA3;font-weight:700;}
+.sp{background:#FFF0F3;color:#C0143C;border:2px solid #F0C4CC;font-size:13px;font-weight:800;padding:9px 14px;border-radius:20px;text-align:center;margin-top:10px;display:none;}
+.tnote{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px;text-align:right;}
+
+/* TERMS */
+.terms-box{background:#FFFBF0;border:1.5px solid #E5D58A;border-radius:12px;padding:14px 16px;margin-top:14px;}
+.terms-title{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.terms-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.terms-list li{font-size:12px;color:#4A4030;line-height:1.55;display:flex;gap:6px;}
+.terms-list li::before{content:'•';color:var(--accent);font-weight:700;flex-shrink:0;}
+.terms-list a{color:var(--accent);text-decoration:underline;}
+
+/* PAYMENT ROW */
+.pay-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;}
+.radio-pill{display:flex;align-items:center;gap:6px;padding:7px 13px;border:1.5px solid var(--border);border-radius:20px;cursor:pointer;font-size:13px;font-weight:500;background:var(--bg);color:var(--muted);}
+.radio-pill input{display:none;}
+.radio-pill:has(input:checked){border-color:var(--accent);background:var(--green-bg);color:var(--accent);font-weight:700;}
+
+/* PRINT BUTTON */
+.print-btn{width:100%;padding:15px;background:linear-gradient(135deg,#E84070,#C0143C);color:white;border:none;border-radius:14px;font-size:15px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;box-shadow:0 4px 18px rgba(192,20,60,.28);}
+.print-btn:hover{background:var(--accent);transform:translateY(-1px);}
+.print-btn:active{transform:none;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:white;padding:10px 18px;border-radius:50px;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.18);transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:999;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+.inote{font-size:11px;color:#4B5563;background:#F0F2FA;border-radius:8px;padding:6px 10px;margin-top:7px;line-height:1.5;}
+
+@media(max-width:620px){
+  .row2{grid-template-columns:1fr;}
+  .tbl-hd,.irow{grid-template-columns:minmax(0,1fr) 80px 80px 62px 26px;}
+  .crow{grid-template-columns:1fr 1fr;}
+  .crow>:nth-child(3){grid-column:1;}
+  .crow>:nth-child(4){grid-column:2;align-self:end;}
+}
+
+
+/* ══════════════════════════════════════════════
+   PRINT STYLES  — only #print-view is visible
+══════════════════════════════════════════════ */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  body > *:not(#print-view) { display: none !important; }
+  #print-view { display: block !important; }
+
+  @page {
+    size: A4;
+    margin: 14mm 16mm;
+  }
+
+  body {
+    background: white;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9pt;
+    color: #1C1C1A;
+  }
+
+  /* ── print header ── */
+  .pv-header {
+    background: #ffffff !important;
+    border-bottom: 3pt solid #C0143C;
+    padding: 10pt 0 8pt;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+  }
+  .pv-header-left { display: flex; align-items: center; gap: 10pt; }
+  .pv-logo {
+    width: 28pt; height: 28pt;
+    background: linear-gradient(135deg,#F03D6B,#C0143C) !important;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14pt; font-weight: 800; color: #C0143C;
+    font-family: 'Lora', serif;
+    flex-shrink: 0;
+  }
+  .pv-co-name { font-size: 12pt; font-weight: 800; color: #1A1A2E; }
+  .pv-co-sub  { font-size: 7.5pt; color: #6B7280; margin-top: 2pt; }
+  .pv-badge {
+    background: #E8174A !important;
+    color: #C0143C;
+    padding: 5pt 10pt;
+    border-radius: 5pt;
+    text-align: center;
+  }
+  .pv-badge-title { font-size: 7pt; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: white; }
+  .pv-badge-num   { font-size: 7pt; margin-top: 2pt; color: rgba(255,255,255,.85); }
+  .pv-badge-date  { font-size: 6.5pt; color: rgba(255,255,255,.75); }
+
+  /* gold strip */
+  .pv-strip { height: 0pt; margin-bottom: 8pt; }
+
+  /* ── info boxes ── */
+  .pv-boxes { display: flex; gap: 8pt; margin-bottom: 10pt; }
+  .pv-box {
+    flex: 1;
+    background: #FFF8F9 !important;
+    border: 1pt solid #F0C4CC;
+    border-radius: 5pt;
+    padding: 8pt 10pt;
+  }
+  .pv-box-title { font-size: 6.5pt; font-weight: 700; color: #7A5060; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 5pt; }
+  .pv-box-name  { font-size: 11pt; font-weight: 800; color: #C0143C; margin-bottom: 3pt; }
+  .pv-box-line  { font-size: 8pt; color: #374151; margin-bottom: 2pt; }
+
+  /* ── table ── */
+  .pv-table-title { font-size: 9pt; font-weight: 800; margin-bottom: 5pt; color: #1C1C1A; }
+  .pv-table { width: 100%; border-collapse: collapse; font-size: 8pt; }
+  .pv-table th {
+    background: #1A1A2E !important;
+    color: rgba(255,255,255,.85);
+    padding: 5pt 7pt;
+    text-align: left;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .pv-table td { padding: 6pt 7pt; vertical-align: top; border-bottom: .5pt solid #F0C4CC; }
+  .pv-table tr:nth-child(even) td { background: #FFF8F9 !important; }
+  .pv-table tr:last-child td { border-bottom: none; }
+
+  .pv-item-name { font-weight: 700; color: #C0143C; font-size: 8.5pt; }
+  .pv-item-desc { font-size: 7pt; color: #7A5060; margin-top: 1pt; }
+  .pv-ppn       { font-size: 6.5pt; font-weight: 700; color: #C0392B; }
+  .pv-strike    { text-decoration: line-through; color: #7A5060; font-size: 7pt; }
+  .pv-price     { font-weight: 800; color: #C0143C; font-size: 8.5pt; }
+  .pv-disc      { font-weight: 800; color: #C0143C; }
+  .pv-free      { font-weight: 800; color: #166534; }
+  .pv-right     { text-align: right; }
+  .pv-center    { text-align: center; }
+
+  /* ── totals ── */
+  .pv-totals { margin-top: 8pt; display: flex; justify-content: flex-end; }
+  .pv-totals-inner { width: 55%; }
+  .pv-trow { display: flex; justify-content: space-between; padding: 3pt 0; font-size: 8.5pt; border-bottom: .5pt solid #FAE8EC; }
+  .pv-trow:last-child { border-bottom: none; }
+  .pv-trow .tl { color: #7A5060; }
+  .pv-trow.grand-row {
+    background: #1A1A2E !important;
+    color: white;
+    padding: 7pt 10pt;
+    border-radius: 5pt;
+    margin-top: 5pt;
+    font-size: 12pt;
+    font-weight: 800;
+    border-bottom: none;
+  }
+  .pv-trow.grand-row .tl { color: rgba(255,255,255,.7); font-size: 10pt; }
+  .pv-monthly-eq { font-size: 7.5pt; color: #374151; font-weight: 600; text-align: right; margin-top: 3pt; }
+  .pv-savings-box {
+    background: #C0143C !important;
+    color: #C0143C;
+    border-radius: 5pt;
+    padding: 5pt 10pt;
+    text-align: center;
+    font-weight: 800;
+    font-size: 8.5pt;
+    margin-top: 5pt;
+  }
+
+  /* ── terms ── */
+  .pv-terms {
+    margin-top: 10pt;
+    background: #FFF8F9 !important;
+    border: .8pt solid #F0C4CC;
+    border-radius: 5pt;
+    padding: 8pt 10pt;
+    page-break-inside: avoid;
+  }
+  .pv-terms-title { font-size: 7.5pt; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: #C0143C; margin-bottom: 6pt; }
+  .pv-terms ul { list-style: none; display: flex; flex-direction: column; gap: 3pt; }
+  .pv-terms li { font-size: 7pt; color: #4A4030; line-height: 1.5; display: flex; gap: 5pt; }
+  .pv-terms li::before { content: '•'; color: #B8860B; font-weight: 900; flex-shrink: 0; }
+
+  /* ── footer ── */
+  .pv-footer {
+    margin-top: 10pt;
+    background: #1A1A2E !important;
+    color: white;
+    text-align: center;
+    padding: 8pt;
+    border-radius: 5pt;
+    page-break-inside: avoid;
+  }
+  .pv-footer-main { font-size: 8pt; font-weight: 700; color: #FF8FA3; }
+  .pv-footer-sub  { font-size: 6.5pt; color: rgba(255,255,255,.5); margin-top: 2pt; }
+
+  /* PAGE 2 */
+  .pv-page2 { page-break-before: always; }
+  .pv-p2-header { background: #1A1A2E !important; color: white; padding: 10pt 0 8pt; margin-bottom: 0; border-bottom: 3pt solid #C0143C; }
+  .pv-p2-title { font-size: 13pt; font-weight: 800; }
+  .pv-p2-sub   { font-size: 8pt; color: rgba(255,255,255,.55); margin-top: 2pt; }
+
+  .pv-feat-box { border: .8pt solid #F0C4CC; border-radius: 5pt; margin-top: 8pt; overflow: hidden; }
+  .pv-feat-hd  { padding: 6pt 10pt; color: white; font-size: 8.5pt; font-weight: 800; }
+  .pv-feat-hd.ao { background: #E8174A !important; }
+  .pv-feat-hd.pos { background: #1a56db !important; }
+  .pv-feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; padding: 10pt; background: #FFF8F9 !important; }
+  .pv-feat-item-name { font-size: 8pt; font-weight: 700; color: #1C1C1A; }
+  .pv-feat-item-desc { font-size: 7pt; color: #7A5060; margin-top: 1pt; }
+
+  .pv-steps-box { background: #1A1A2E !important; color: white; border-radius: 5pt; padding: 10pt; margin-top: 8pt; }
+  .pv-steps-title { font-size: 9pt; font-weight: 800; color: #FF8FA3; margin-bottom: 7pt; }
+  .pv-steps-list { list-style: none; display: flex; flex-direction: column; gap: 5pt; }
+  .pv-steps-list li { font-size: 8pt; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     SCREEN: INPUT FORM
+════════════════════════════════ -->
+<header class="app-header">
+  <div class="logo-area">
+    <img src="data:image/png;base64,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" style="height:32px;width:auto;display:block;" alt="Accurate"/>
+    <div>
+      <h1>Generator Penawaran Accurate</h1>
+      <p>Accurate Online & POS — CPS Soft</p>
+    </div>
+  </div>
+  <span class="header-tag">v5.0</span>
+</header>
+<div style="background:#FFF7ED;border-bottom:1.5px solid #FCD34D;padding:8px 22px;font-size:11.5px;color:#92400E;display:flex;align-items:center;gap:8px;">
+  <span style="font-size:14px;">⚠️</span>
+  <span><strong>Penawaran Sementara:</strong> Dokumen ini bersifat sementara dan akan digantikan oleh penawaran resmi melalui sistem Accurate.</span>
+</div>
+
+<div class="main">
+
+  <!-- DATA CUSTOMER -->
+  <div class="card">
+    <div class="card-head"><div class="card-icon">👤</div><span class="card-title">Data Prospek / Customer</span></div>
+    <div class="card-body">
+      <div class="row2">
+        <div class="fg"><label>Nama Perusahaan *</label><input id="company_name" placeholder="CV Maju Bersama"/></div>
+        <div class="fg"><label>Nama Kontak / PIC</label><input id="contact_name" placeholder="Bapak / Ibu ..."/></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>No. HP / WA</label><input id="contact_phone" placeholder="08xx-xxxx-xxxx"/></div>
+        <div class="fg"><label>Email</label><input id="contact_email" placeholder="email@perusahaan.com"/></div>
+      </div>
+      <div class="row1"><div class="fg"><label>Alamat / Kota</label><input id="company_address" placeholder="Jl. Contoh No. 1, Bandung"/></div></div>
+    </div>
+  </div>
+
+  <!-- DATA BAE -->
+  <div class="card">
+    <div class="card-head"><div class="card-icon">🧑‍💼</div><span class="card-title">Data Sales (BAE)</span></div>
+    <div class="card-body">
+      <div class="row2">
+        <div class="fg"><label>Nama BAE *</label><input id="bae_name" placeholder="Nama kamu"/></div>
+        <div class="fg"><label>No. HP / WA</label><input id="bae_phone" placeholder="08xx-xxxx-xxxx"/></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>Tanggal Penawaran</label><input type="date" id="quote_date" onchange="updateExpiry()"/></div>
+        <div class="fg"><label>Berlaku Selama</label>
+          <select id="validity_days" onchange="updateExpiry()">
+            <option value="1">1 Hari</option>
+            <option value="2">2 Hari</option>
+            <option value="3">3 Hari</option>
+            <option value="4">4 Hari</option>
+            <option value="5">5 Hari</option>
+            <option value="6">6 Hari</option>
+            <option value="7" selected>7 Hari</option>
+          </select>
+          <div class="inote" id="expire_display"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUK & HARGA -->
+  <div class="card">
+    <div class="card-head"><div class="card-icon">📦</div><span class="card-title">Produk & Harga</span></div>
+    <div class="card-body">
+
+      <!-- DURATION -->
+      <div class="dur-wrap">
+        <label>Durasi Berlangganan</label>
+        <div style="margin-top:7px">
+          <div class="dur-toggle">
+            <button class="dur-btn" id="btn-m" onclick="setDur('monthly')">
+              Bulanan<br><span class="bdg">Rp 333.000 / bln</span>
+            </button>
+            <button class="dur-btn active" id="btn-a" onclick="setDur('annual')">
+              Tahunan (12 bln)<br><span class="bdg">Hemat s/d 20%</span>
+            </button>
+          </div>
+        </div>
+        <div class="inote" id="dur-note">Harga tahunan dibayar di muka 1 tahun — sudah lebih hemat dari bulanan x 12.</div>
+      </div>
+
+      <!-- AO -->
+      <div class="divider">Accurate Online</div>
+      <div class="tbl" id="ao-tbl" style="display:none">
+        <div class="tbl-hd">
+          <span>Produk</span><span>Harga Normal</span><span>Harga Jual</span><span>Diskon (%)</span><span></span>
+        </div>
+        <div id="ao-rows"></div>
+      </div>
+      <button class="add-btn" onclick="openPicker('ao')">+ Tambah produk AO</button>
+      <div id="ao-picker"></div>
+
+      <!-- POS -->
+      <div class="divider" style="margin-top:20px">Accurate POS & Add-On</div>
+      <div class="tbl" id="pos-tbl" style="display:none">
+        <div class="tbl-hd">
+          <span>Produk / Add-On</span><span>Harga Normal</span><span>Harga Jual</span><span>Diskon (%)</span><span></span>
+        </div>
+        <div id="pos-rows"></div>
+      </div>
+      <button class="add-btn" onclick="openPicker('pos')">+ Tambah produk POS / Add-On</button>
+      <div id="pos-picker"></div>
+
+      <!-- CUSTOM -->
+      <div class="divider" style="margin-top:20px">Item Custom / Layanan Tambahan</div>
+      <div id="custom-items"></div>
+      <button class="add-btn" onclick="addCustom()">+ Tambah item manual</button>
+
+      <!-- TOTAL -->
+      <div class="tbox">
+        <div class="tr" id="r-strike" style="display:none">
+          <span class="l">Total Harga Normal</span>
+          <span id="t-normal" style="text-decoration:line-through;color:rgba(255,255,255,.32);font-size:14px"></span>
+        </div>
+        <div class="tr" id="r-saved" style="display:none">
+          <span class="l">Total Diskon</span>
+          <span id="t-saved" style="color:var(--gold-light);font-size:16px;font-weight:700"></span>
+        </div>
+        <div class="tr grand"><span>Total Investasi</span><span id="t-final">—</span></div>
+        <div class="tr moeq" id="r-moeq" style="display:none">
+          <span class="l">Setara per bulan</span><span class="v" id="t-moeq"></span>
+        </div>
+        <div class="tnote">*) Harga sudah termasuk PPN 11% kecuali yang ditandai +PPN</div>
+        <div class="sp" id="sp"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- KETENTUAN -->
+  <div class="card">
+    <div class="card-head"><div class="card-icon">📋</div><span class="card-title">Ketentuan</span></div>
+    <div class="card-body">
+      <div class="row2">
+        <div class="fg">
+          <label>Cara Pembayaran</label>
+          <select id="payment">
+            <option>Transfer Bank (Full)</option>
+            <option>Cicilan (sesuai kesepakatan)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Catatan Tambahan (opsional)</label>
+          <textarea id="extra_notes" placeholder="Misal: termasuk training onboarding 1 sesi, dll..."></textarea>
+        </div>
+      </div>
+
+      <!-- TERMS — tampil hanya di HTML, tidak di PDF -->
+      <div class="terms-box">
+        <div class="terms-title">Syarat & Ketentuan (tercetak di PDF)</div>
+        <ul class="terms-list">
+          <li>Penawaran berlaku 7 hari sejak tanggal penawaran.</li>
+          <li>Dengan mendaftar, customer dianggap menyetujui <a href="https://cpssoft.com/docs/aol-user-toc/" target="_blank">Term &amp; Condition Accurate Online</a>.</li>
+          <li>Untuk pembelian paket prepaid ataupun paket add-on, masa tunggu diperhitungkan <strong>90 hari</strong> sejak faktur penjualan diterima.</li>
+          <li>Nilai pembayaran bersifat <strong>Non-Refundable</strong> — tidak dapat dikembalikan dengan kondisi apapun.</li>
+          <li>Harga di atas tidak termasuk jasa instalasi, implementasi, maupun training Visit.</li>
+          <li>After Sales & Support: <a href="https://docs.google.com/presentation/d/1dK5b38c4QlR9mwIqOBT_sr418jz5bL27/edit" target="_blank">Panduan After Sales CPS Soft</a>.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="print-btn" onclick="doPrint()">
+    Cetak / Simpan sebagai PDF
+  </button>
+
+</div><!-- /main -->
+
+<div class="toast" id="toast"></div>
+
+
+<!-- ════════════════════════════════
+     PRINT VIEW (hidden on screen)
+════════════════════════════════ -->
+<div id="print-view"></div>
+
+
+<script>
+/* ══════ CATALOG ══════ */
+const AO_CAT = [
+  { id:'ao-base',   name:'Accurate Online',                  desc:'1 Data Usaha · 1 User · 1 Outlet POS (sudah termasuk PPN)', monthly:333000,  normAnn:3996000, annPrice:3219000, ppn:true,  unit:'' },
+  { id:'ao-user',   name:'Pengguna Back Office Tambahan',    desc:'Tambah user akses Accurate Online',                         monthly:22200,   normAnn:266400,  annPrice:null,   ppn:true,  unit:'/user' },
+  { id:'ao-branch', name:'Multi Branch',                     desc:'Kelola performa & hak akses per cabang',                    monthly:99900,   normAnn:1198800, annPrice:999000, ppn:true,  unit:'/cabang' },
+  { id:'ao-cpc',    name:'Cost & Profit Center',             desc:'Laporan pengelompokan pendapatan & biaya per departemen',   monthly:111000,  normAnn:1332000, annPrice:null,   ppn:true,  unit:'' },
+  { id:'ao-mfg',    name:'Accurate Manufaktur',              desc:'Modul produksi & manufaktur lengkap (sudah termasuk PPN)',                       monthly:2220000, normAnn:26640000,annPrice:22200000,ppn:true, unit:'' },
+];
+const POS_CAT = [
+  { id:'pos-outlet', name:'Multi Outlet Accurate POS', desc:'Tambah outlet kasir (di luar 1 outlet gratis)',  monthly:122100, normAnn:1465200, annPrice:999000, ppn:true,  unit:'/outlet' },
+  { id:'pos-device', name:'Multi Device Accurate POS', desc:'Tambah perangkat kasir per outlet',              monthly:22200,  normAnn:266400,  annPrice:null,   ppn:true,  unit:'/device' },
+];
+
+/* ══════ STATE ══════ */
+let dur = 'annual';
+let rowCtr = 0, custCtr = 0;
+
+/* ══════ DURATION ══════ */
+function setDur(d) {
+  dur = d;
+  document.getElementById('btn-m').classList.toggle('active', d==='monthly');
+  document.getElementById('btn-a').classList.toggle('active', d==='annual');
+  document.getElementById('dur-note').textContent = d==='annual'
+    ? 'Harga tahunan dibayar di muka 1 tahun — sudah lebih hemat dari bulanan x 12.'
+    : 'Harga bulanan — bayar per bulan, fleksibel berhenti kapan saja.';
+  document.getElementById('dur-note').style.background = d==='monthly' ? '#FFF7ED' : '';
+  document.getElementById('dur-note').style.color = d==='monthly' ? '#92400E' : '';
+  document.getElementById('dur-note').style.borderLeft = d==='monthly' ? '3px solid #F59E0B' : '';
+  refreshAll();
+  calcTotal();
+}
+
+function getPrice(item) {
+  if (dur === 'annual') {
+    return { norm: item.normAnn, spec: item.annPrice !== null ? item.annPrice : item.normAnn };
+  }
+  return { norm: null, spec: item.monthly };
+}
+
+/* ══════ PICKER ══════ */
+function openPicker(type) {
+  // close any open picker
+  document.querySelectorAll('.picker').forEach(p => p.remove());
+
+  const cat    = type==='ao' ? AO_CAT : POS_CAT;
+  const anchor = document.getElementById(type+'-picker');
+
+  const wrap = document.createElement('div');
+  wrap.className = 'picker';
+
+  cat.forEach(item => {
+    const { norm, spec } = getPrice(item);
+    const priceHint = (dur==='annual' && norm !== spec)
+      ? `<span style="text-decoration:line-through;color:#aaa;font-size:10px">${rp(norm)}</span> <span style="color:#E8174A;font-weight:700">${rp(spec)}${item.unit}</span>`
+      : `<span style="color:#E8174A;font-weight:700">${rp(spec)}${item.unit}</span>`;
+
+    const btn = document.createElement('button');
+    btn.className = 'pi';
+    btn.innerHTML = `<div class="pi-name">${item.name}${!item.ppn ? ' <span class="ppntag">+PPN</span>' : ''}</div>
+                     <div class="pi-desc">${item.desc} &nbsp;·&nbsp; ${priceHint}</div>`;
+    btn.onclick = () => { wrap.remove(); addRow(type, item); };
+    wrap.appendChild(btn);
+  });
+
+  const cl = document.createElement('button');
+  cl.className = 'pi-close';
+  cl.textContent = '× Tutup';
+  cl.onclick = () => wrap.remove();
+  wrap.appendChild(cl);
+
+  anchor.appendChild(wrap);
+}
+
+/* ══════ ADD ROW ══════ */
+function addRow(type, item) {
+  const id  = ++rowCtr;
+  const tbl = document.getElementById(type+'-tbl');
+  const container = document.getElementById(type+'-rows');
+  const { norm, spec } = getPrice(item);
+  const hasQty = item.unit !== '';
+
+  tbl.style.display = 'block';
+
+  const div = document.createElement('div');
+  div.id = 'row'+id;
+  div.className = 'irow';
+  div.dataset.iid  = item.id;
+  div.dataset.type = type;
+  div.dataset.ctr  = id;
+
+  div.innerHTML = `
+    <div>
+      <div class="ilabel">${item.name}${!item.ppn?'<span class="ppntag">+PPN</span>':''}</div>
+      <div class="isub">${item.desc}</div>
+      ${hasQty ? `<div class="qty-r"><span class="qty-lbl">Qty:</span>
+        <div class="qty-c">
+          <button class="qbtn" onclick="chQ(${id},-1)">-</button>
+          <input class="qinp" type="number" id="qty${id}" value="1" min="1" max="99" oninput="calcTotal()"/>
+          <button class="qbtn" onclick="chQ(${id},1)">+</button>
+        </div></div>` : ''}
+    </div>
+    <div class="pc" id="pn${id}"></div>
+    <div class="pc" id="pf${id}"></div>
+    <div class="dw"><input type="number" id="disc${id}" min="0" max="100" value="0" placeholder="0" oninput="onDisc(${id})"/></div>
+    <button class="rm-btn" onclick="rmRow(${id},'${type}')">&#128465;</button>
+  `;
+
+  container.appendChild(div);
+  renderCells(id, item, norm, spec, 0);
+  calcTotal();
+}
+
+function rmRow(id, type) {
+  document.getElementById('row'+id)?.remove();
+  const container = document.getElementById(type+'-rows');
+  if (!container.children.length) document.getElementById(type+'-tbl').style.display='none';
+  calcTotal();
+}
+
+function chQ(id, d) {
+  const inp = document.getElementById('qty'+id);
+  if (inp) { inp.value = Math.max(1, parseInt(inp.value||1)+d); calcTotal(); }
+}
+
+function onDisc(id) {
+  const row  = document.querySelector(`.irow[data-ctr="${id}"]`);
+  if (!row) return;
+  const item = [...AO_CAT,...POS_CAT].find(i=>i.id===row.dataset.iid);
+  if (!item) return;
+  const { norm, spec } = getPrice(item);
+  renderCells(id, item, norm, spec, parseFloat(document.getElementById('disc'+id)?.value||0));
+  calcTotal();
+}
+
+function refreshAll() {
+  document.querySelectorAll('.irow[data-iid]').forEach(row => {
+    const id   = row.dataset.ctr;
+    const item = [...AO_CAT,...POS_CAT].find(i=>i.id===row.dataset.iid);
+    if (!item) return;
+    const { norm, spec } = getPrice(item);
+    renderCells(id, item, norm, spec, parseFloat(document.getElementById('disc'+id)?.value||0));
+  });
+}
+
+function renderCells(id, item, norm, spec, disc) {
+  const after = spec * (1 - disc/100);
+  const annSave = norm && norm !== spec;
+  const dSave   = disc > 0;
+  const pn = document.getElementById('pn'+id);
+  const pf = document.getElementById('pf'+id);
+  if (!pn||!pf) return;
+
+  // normal cell
+  pn.innerHTML = (annSave||dSave)
+    ? `<div class="ps">${rp(annSave ? norm : spec)}${item.unit}</div>` : '';
+
+  // final cell
+  if (disc >= 100) {
+    pf.innerHTML = `<div class="pfree">GRATIS</div>`;
+  } else if (dSave) {
+    pf.innerHTML = `<div class="pf">${rp(after)}${item.unit}</div><div class="psave">Hemat ${disc}%</div>`;
+  } else if (annSave) {
+    pf.innerHTML = `<div class="pf">${rp(spec)}${item.unit}</div>`;
+  } else {
+    pf.innerHTML = `<div class="po">${rp(spec)}${item.unit}</div>`;
+  }
+}
+
+/* ══════ CUSTOM ══════ */
+function addCustom() {
+  const id = ++custCtr;
+  const d = document.createElement('div');
+  d.id = 'cust'+id; d.className = 'crow';
+  d.innerHTML = `
+    <div class="fg"><label>Nama Item</label><input id="cn${id}" placeholder="Training, dll" oninput="calcTotal()"/></div>
+    <div class="fg"><label>Harga (Rp)</label><input type="number" id="cp${id}" min="0" value="0" oninput="calcTotal()"/></div>
+    <div class="fg dw"><label>Diskon %</label><input type="number" id="cd${id}" min="0" max="100" value="0" oninput="calcTotal()"/></div>
+    <div class="fg"><label>&nbsp;</label><button class="rm-btn" onclick="document.getElementById('cust${id}').remove();calcTotal()">&#128465;</button></div>
+  `;
+  document.getElementById('custom-items').appendChild(d);
+}
+
+/* ══════ COLLECT ══════ */
+function collectLines() {
+  const lines = [];
+  document.querySelectorAll('.irow[data-iid]').forEach(row => {
+    const item = [...AO_CAT,...POS_CAT].find(i=>i.id===row.dataset.iid);
+    if (!item) return;
+    const id   = row.dataset.ctr;
+    const { norm, spec } = getPrice(item);
+    const qty  = parseFloat(document.getElementById('qty'+id)?.value||1);
+    const disc = parseFloat(document.getElementById('disc'+id)?.value||0);
+    lines.push({
+      name:item.name, desc:item.desc, ppn:item.ppn, unit:item.unit,
+      qty, disc,
+      normTotal: (norm||spec)*qty,
+      specTotal: spec*qty,
+      finalTotal: spec*qty*(1-disc/100),
+      isFree: disc>=100,
+    });
+  });
+  document.querySelectorAll('[id^="cust"]').forEach(row => {
+    const cid = row.id.replace('cust','');
+    const name  = document.getElementById('cn'+cid)?.value || 'Item Custom';
+    const price = parseFloat(document.getElementById('cp'+cid)?.value||0);
+    const disc  = parseFloat(document.getElementById('cd'+cid)?.value||0);
+    if (price>0) lines.push({ name, desc:'', ppn:true, unit:'', qty:1, disc, normTotal:price, specTotal:price, finalTotal:price*(1-disc/100), isFree:disc>=100 });
+  });
+  return lines;
+}
+
+/* ══════ TOTAL ══════ */
+function calcTotal() {
+  const lines = collectLines();
+  const tFin = document.getElementById('t-final');
+  if (!lines.length) { tFin.textContent='—'; ['r-strike','r-saved','r-moeq'].forEach(id=>document.getElementById(id).style.display='none'); document.getElementById('sp').style.display='none'; return; }
+
+  const totNorm  = lines.reduce((s,l)=>s+l.normTotal,0);
+  const totFinal = lines.reduce((s,l)=>s+l.finalTotal,0);
+  const totSaved = totNorm - totFinal;
+
+  tFin.textContent = rp(totFinal);
+
+  if (totSaved>0) {
+    document.getElementById('r-strike').style.display='flex';
+    document.getElementById('t-normal').textContent=rp(totNorm);
+    document.getElementById('r-saved').style.display='flex';
+    document.getElementById('t-saved').textContent='- '+rp(totSaved);
+    const pct=Math.round(totSaved/totNorm*100);
+    const pill=document.getElementById('sp');
+    pill.style.display='block';
+    pill.textContent=`Customer hemat ${rp(totSaved)}  |  ${pct}% lebih hemat dari harga normal`;
+  } else {
+    document.getElementById('r-strike').style.display='none';
+    document.getElementById('r-saved').style.display='none';
+    document.getElementById('sp').style.display='none';
+  }
+
+  if (dur==='annual') {
+    document.getElementById('r-moeq').style.display='flex';
+    document.getElementById('t-moeq').textContent=rp(Math.round(totFinal/12))+' / bulan';
+  } else {
+    document.getElementById('r-moeq').style.display='none';
+  }
+}
+
+/* ══════ DATES ══════ */
+function updateExpiry() {
+  const v    = document.getElementById('quote_date').value;
+  const days = parseInt(document.getElementById('validity_days')?.value || 7);
+  if (!v) return;
+  const d = new Date(v+'T00:00:00'); d.setDate(d.getDate()+days);
+  const expDisplay = document.getElementById('expire_display');
+  if (expDisplay) expDisplay.textContent = 'Berlaku s/d: ' + fmtDate(d.toISOString().split('T')[0]);
+}
+function fmtDate(v) {
+  if (!v) return '—';
+  return new Date(v+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+/* ══════ PRINT ══════ */
+function doPrint() {
+  const company = document.getElementById('company_name').value.trim();
+  const bae     = document.getElementById('bae_name').value.trim();
+  if (!company) return toast('Nama perusahaan wajib diisi');
+  if (!bae)     return toast('Nama BAE wajib diisi');
+  const lines = collectLines();
+  if (!lines.length) return toast('Tambahkan minimal 1 produk');
+
+  const quoteNum = 'QT-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*9000)+1000);
+  const dateStr  = fmtDate(document.getElementById('quote_date').value);
+  const days     = parseInt(document.getElementById('validity_days')?.value || 7);
+  const qDate    = document.getElementById('quote_date').value;
+  const expVal   = qDate ? (()=>{ const d=new Date(qDate+'T00:00:00'); d.setDate(d.getDate()+days); return d.toISOString().split('T')[0]; })() : '';
+  const expStr   = fmtDate(expVal);
+  const durLabel = dur==='annual' ? '12 Bulan (Tahunan)' : 'Bulanan';
+  const contact  = document.getElementById('contact_name').value;
+  const phone    = document.getElementById('contact_phone').value;
+  const email    = document.getElementById('contact_email').value;
+  const address  = document.getElementById('company_address').value;
+  const baePhone = document.getElementById('bae_phone').value;
+  const payment  = document.getElementById('payment').value;
+  const notes    = document.getElementById('extra_notes').value;
+
+  const totNorm  = lines.reduce((s,l)=>s+l.normTotal,0);
+  const totFinal = lines.reduce((s,l)=>s+l.finalTotal,0);
+  const totSaved = totNorm-totFinal;
+
+  /* ── build table rows ── */
+  const tRows = lines.map((l,i) => `
+    <tr>
+      <td style="text-align:center;color:#7A5060">${i+1}</td>
+      <td>
+        <div class="pv-item-name">${l.name}${!l.ppn ? ' <span class="pv-ppn">(+PPN)</span>' : ''}</div>
+        ${l.desc ? `<div class="pv-item-desc">${l.desc}</div>` : ''}
+      </td>
+      <td class="pv-center">${l.qty}</td>
+      <td class="pv-right">
+        ${l.normTotal !== l.finalTotal ? `<div class="pv-strike">${rp(l.normTotal)}</div>` : rp(l.normTotal)}
+      </td>
+      <td class="pv-center pv-disc">${l.disc>=100 ? 'GRATIS' : (l.disc>0 ? l.disc+'%' : '—')}</td>
+      <td class="pv-right ${l.isFree?'pv-free':l.normTotal!==l.finalTotal?'pv-price':''}">
+        ${l.isFree ? 'GRATIS' : rp(l.finalTotal)}
+      </td>
+    </tr>
+  `).join('');
+
+  /* ── savings row ── */
+  const savingsBlock = totSaved>0 ? `
+    <div class="pv-trow" style="color:#C0392B">
+      <span class="tl">Total Diskon (${Math.round(totSaved/totNorm*100)}%)</span>
+      <span>- ${rp(totSaved)}</span>
+    </div>
+    <div class="pv-savings-box">Customer hemat ${rp(totSaved)} — ${Math.round(totSaved/totNorm*100)}% lebih hemat dari harga normal</div>
+  ` : '';
+
+  const monthlyEq = dur==='annual'
+    ? `<div class="pv-monthly-eq">Setara ${rp(Math.round(totFinal/12))} / bulan</div>` : '';
+
+  /* ── terms ── */
+  const termsList = [
+    `Penawaran berlaku ${days} hari sejak tanggal penawaran (s/d ${expStr}).`,
+    `Pembayaran: ${payment}.`,
+    `Durasi berlangganan: ${durLabel}.`,
+    `Harga sudah termasuk PPN 11%.`,
+    `Dengan mendaftar, customer dianggap menyetujui <a href="https://cpssoft.com/docs/aol-user-toc/" target="_blank">Term &amp; Condition Accurate Online</a>.`,
+    `Untuk pembelian paket prepaid/add-on, masa tunggu diperhitungkan 90 hari sejak faktur penjualan diterima.`,
+    `Nilai pembayaran bersifat Non-Refundable (tidak dapat dikembalikan dengan kondisi apapun).`,
+    `Harga di atas tidak termasuk jasa instalasi, implementasi, maupun training Visit.`,
+    `After Sales &amp; Support: <a href="https://docs.google.com/presentation/d/1dK5b38c4QlR9mwIqOBT_sr418jz5bL27/edit" target="_blank">Panduan After Sales CPS Soft</a>.`,
+    ...(dur==='monthly' ? ['Paket bulanan tidak termasuk fasilitas Private Training Online.'] : []),
+  ...(notes ? [`Catatan: ${notes}`] : []),
+  ].map(t => `<li>${t}</li>`).join('');
+
+  /* ── full HTML ── */
+  document.getElementById('print-view').innerHTML = `
+
+    <!-- PAGE 1 -->
+    <div class="pv-header">
+      <div class="pv-header-left">
+        <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABeAVQDASIAAhEBAxEB/8QAHAABAAMBAQEBAQAAAAAAAAAAAAYHCAUEAwEC/8QAQBAAAQIFAgMGBAMGBAYDAAAAAQIDAAQFBhESIQcxQQgTIlFhgRRxkaEyUmIVIyQzQrFygqLBFyY0Q2PCkuHw/8QAGwEBAAIDAQEAAAAAAAAAAAAAAAEEAwYHBQL/xAAsEQEAAQIEBQMDBQEAAAAAAAAAAQIDBAURIQYSMVFxQWGRIoGhIzNCsdHB/9oADAMBAAIRAxEAPwDZcIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEIQgEVjfnGCkUN56n0dn9qTzZKFL1YYQr581Y8ht6xx+Pd/uyhctSjPJC3G/419tfiQCT+6GORI5+hx5xRUYa7mm0N+4d4UoxFuMTjI2npT3jvP/ACEzq/FC96krxVpyVQFagiVQGgPcDUR8yY5zF83iy6pxFzVUlRyQuZUsfQkgR47PozlwXNIUZtRSZp0JUoc0pG6jyPJIJi1uNvDyh0Syk1uiSipdVOKEzASoqLralBOo5/qCiDkY2JzyGMf1TEzq2nEXcrwWItYObURNfTSmNO0a+Z2cS2ONVxyLqG600xVJfYKVpDboGeYKfCdvMdBvzzdtnXZRLrp5m6RM6lJ/msOYS60f1Jz9xkHzjHkvMMvpy0sHzHIj2jrW5WahQKwxVaY8WphlWR+VY6pUOqT1ETRdlUzfhLC4qiarFPJX7dJ8x6eY/LZUI41l3DJ3RbstV5M4Dg0utnm24PxJPyP1GDHZizE6uT3bVdmubdcaTG0kIR+KUEpKlEBIGSSdhBjfsIgtwcWbJo8wZdVSXPPJVpWmTb7wJ/zbJPsTHAHHq1O9INLrQbxsoNtZPt3n+8BbMIiNl8RbZu2b+Cpb8wmcDXelh5gpUEjGdxlOxIHOJdAIRyLmuahW3LB+tVJiUCgShClZccxz0pG6uY5DrEDmuOlnMv8AdtSlXmEAkFxDCACN9xqWD5cwOftAWnCIvYl90G8g+mkGaS6wkKdafZ0lIPLcZT084lEAhEFuDizZNHmDLqqS555KtK0ybfeBP+bZJ9iY40tx1s917Q5J1hhJOzi2EEDbrhZPPbYGAtOEeSTqMnN0lqrMPapJ1kPodUkpy2RqCsEAjbfcRBpfjLZUxMNy7Ls8px1YQhPwxGSTgDcwFiQhEdva86HZ7cqutPOo+KKg0G2ysnTjJ/1D6wEihEasm9qHeCpsUVUwsSgR3pca0Aas6fn+E/SPtel30a0ZWXmayt5Dcwsob7tvWcgZgO/CI1bN8W9cFInKtJzS2ZKTVpfemUd2lO2eZ+Y+scKT4uW1ULolKBSWJ6ecmXg0mYShKGtzz8RCiBueXTbMBYUIRHbpve17Zc7msVZpl/AV3CQVuYPI6Ugke8BIoRVD/Hi00OhLVOrDqc+JXdNj6Ar3+0dGh8ZrMqc2iWUqoSK3FhCPiJfIUTsB4Crr5wFjRybiuWgW82ldaq0rJFYyhDi/GoZxkJHiI9QI/LuuOmWtSDVKs44iX7xLfgTqUVHlt7GMw8YrnlLsvRypSBdVJtsNsslwYJAGTt08Slf36wGmrPuilXXIvz1GW65LMvdwXFt6NSglKjgHfYKHMCO3FF8JeI9o2tZEpSp+YnPjAtxx4IYKkgqUcAHb+nT75i66VOtVGmy1QYS4lmZaS62FpwrSoZGR02PKA9MI4F23lblrNBVYqTTLpGUsI8bqvkkb49TtEI/472l8Ro/Z9Z7vl3nct88+Wvl9/SAtaEcW1LqoN0ShmaLUGpnSB3jf4XG8/mSdx135HGxMdqAQhCAR4q9UWqTRJ2pvFIblWFunJ56QTj35R7Yh3Gt51jhfWlsjKi22g7Z8KnUJV9iYiZ0hawNmL+Jt2p6VVRHzOjLlQmnp6fmJ6YOXph1Trhyd1KJJ578zHwhH0lWHpqaalpdBceeWG20j+pROAPrFN3yIiintELp7M9vnM/cr7Yx/0ssVJ+RWofYZx5jPOLWRO2/dUhU6WxOylSYAVKzrbTgVp1AgpOOXXf0PlEYuaab4a8GXEtKDj8nKBhoo8Op9w41DGNtSirzwDvmKF7OVyLoXEiUk3HtEnVf4R4HkVn+Ufnrwn5KMZJuRbmKO7mlzLr2eU4rM6Kpjkn6PeKd59+m8e8oVdtHft26alRXSvXJTK2gojBWkHwq904PvHwlqk82cO/vU+uxEXZ2s7aU3PU66pZgd28n4WbWn843QT8xqGf0iKFilXE265iHSsmx1GZ4C3iJ6zG/mNpX12YLpSLjmrfU6Q3OMF5DZB2dRjOPmnVn/AAiNExjTgK/8Nxct9zJGXlt7fqaWn/eNlxew1c1UbuXcdYSjD5lFVP8AKmJnzrMf1EP5cWhttTji0oQkFSlKOAAOZJjMXF/iTPXPUZil02YWxQ2llCUtkj4rB/GrqUnmEn0J35Wz2hq67R+H7ktLOaHqk6JUkcw2QSv6gaT/AIopzgRbjdw36wZlOqVp6Pi3UlOQspICE+X4iDg8wkiLLSpd7h5wYna3INVSvzbtNlnk6mmG0fvlDoo52SOuME/KOZxrsSi2T+y00qbnn1znelaZlaFaQjTuNKRz1fYxp6MzdpGroqF/iSZcSpunyyWVaTnDhJUrfHkUjG+MeeYDvdlenFVSrVWUgaW2W5dCiNzqJUoD/wCCfqIsPjBfKLMoAVK907VJo6JZpR/AMHLhHUDl6kj1jk9munCU4eGcKCFz0245qI5pThAA9MpV9TFQcdKy/VuI1RbWpXcSK/hmUaiQnSPEcHllWTt6c+cByKHSLlv24XES5dn51zxvvvr8KB5qUeQ8gPYRblP4A01MpioXBNuTBHNhpKEJPyOSft7RJeAFvsUewpee7tAm6mO/eWAclOT3Y38gc7Y/EefM2HA0Q/hfYsvY8lPy7U38YubmAvvi1oUGwnCUHc5wSrf15CKj45cSJmrVCZtqjPKapjCy1MrTzmVg4Iz+QEbefPcYi4+LNYVQ+HtXnmzh0s9y2dOrCnCEA49NWfbryjMHDyiIuO9aXRndXczD373ScEtpBUvB6eFJ/wDuAlPDfhNVrskRVJuaFLp6j+6WporW96pTkeH1J9jE6e4A0cpT3NwTyDtqK2kKzvvjGMZHLy9eUXG2hDbaW20JQhICUpSMAAcgBH9RGqdEY4lziaJw3rL7GlkNSRZa6aSrDace6hiMz8KZE1HiPQZbSVATiHSAM5DfjPthMXZ2mZ8S1hMSQPjnJ1Ccb/hSFKJ8uYT9fSIB2ZqeZm+5ieONMnJrI89SiEj7aolDSUZz7T8+H7ykJBJyJWSClc9lLUSR9Ak7efpGjIyPxiqiKvxJrM006HWUPBhspUSnDaQg49MgnbbcmEErh7MUiWLInJ1ROqanlYGdtKEpA98lX2iPdquZ1TlAkwFDQ2+6d9jqKAPppP1izOD8gKdw0oTISElyVD5wc57wlef9UUd2jp8zfEp2W1EpkpVpkDGAMjvP/f8A/YgI1RHKzW6TK2XRJV14vTipp1KD/MUQlI1dAhITnJ5FRi3eFvCKq25dUnXqvPyLnwyVlLLBUrxKQU7kpHLOduv39PZqtluRtty5H2k/FVAqbZUR4kspVgjn1UnPLoItGszzdMo87UnhluUl3H1j0QkqPIHy8oCruOfEp6gKVblCdSmouN/xT4zqlgQCkJ/UQSc9Bg8ztVnDqwK3fc85NqeWxIB0/EzzoKipZ3ISCfGrz32zk+sbecqNz3OVuKDs/U5sDJ2BccVgD0GSBjoI2HbdIlKDQ5SkSLaUMSzehISDueajuTzJJ59YCmb94Q2xbdlVGtN1KqrmJVoKR3jjfdqUVBIBARnmQOcVpwtpwqvEOhya0FaDNpcWkDmlHjI+WEmLs7TNWEnZMvS0qIcqE0MgKxlDfiO3XxaPT7RAuzNTzM33MTxxpk5NZHnqUQkfbVAXNxNsxN70mWp7lTdkW2H++OhoLCzpKRkZHLJ+sZLmmm0TzrMssvNh0pbUBusZwD7xsm9Z80uz6xUUr0Ll5J1bZyR4wg6dxy3xGTuHVPNUvuiSOMpcnWyvc/gSrUrl6AwglcEvwDpipdtT9dnUOlAK0pbQQFY3APziY8Ubtl7Es9CZRSDPuIDFPacBVnTpBUfRIIPqcDrE3jL/AGiaquocSJiV1KLVPZbYQOmSNajj5qx7CA5tiWjXOItwzD70y4GtfeTs86Crc9B5qPQbYAizbk4JW1J2xOzMlUKkmclpdbyXHXEKQopBOCNI2OMcxj161vY/FCu2hRP2TS5CkuMl1TqlvsrK1KOBuUrAOwA5dI+VycRLzu1v9mPTSu5fIT8JJtae85eHbKlfIkwH5wVq01SuI9KEu44G5t4Sz6EnZaV7b7HkcH26RrOKJ4H8MqtKVqXuWvy3wjbIKpaWcyHSs7BShtpx5H6Re0JIIQhEJIivF6WXNcNK822pSSiULx0pySGyFkY9Qkj3iVR/Ewy1MS7jDyAtpxJQtJ5KSRgiImNY0ZsPemzdpux1pmJ+J1YniyezzQk1S9jUXlENUxvvgkZ8TispSD6DxH2HTMQq8qE9at3T9uTAX/DkOSri/wDvS6idCwevIpP6kmOjw9vGoWbV1zsm2iYZeRofl1qwHB0OehB6/PzirTOk7u146a8fltc4Sd66dvv1/G3lL+1xXwuZpFssuJPdAzkwkKOQo5SjI5ctZ89xy60PKvvSsy1My7imnmVhxtaTgpUDkEfIxIeI9Xn7luyfuCbaCBMuDQhJyGkABKU59ABk4GTk9YjUVL1U1VzL08hy+MDl1vDz1iN/M7z/AI2VVWZbiZwdV3RU2anJJdbKhuh5BBA2HRacHHMZxzjGsWNZPFmr2pYc1bMhKJceceUuXm1vH+HSoDUkIA33CiDqGCrkYrkkAZOwj6vXIr0n1efw1lOIyurEWq/25q1o8d/jSPsnnZ/klz3FyhoCcoZW4+4c8ghtRB5j+rSPeNjxQfZKtSYl5aoXnOtLaE4gSkglScFTIIUtzfmlSgkD/AfMRfkXMNTy0b+rm/GeYUYzM55J1iiIp+NZn8ypLtVpc+Bt9QA7oOvhRxvnCMf2McXsuTkszdFTknNn5iVSpo+YSrxD7g+xi4eJlps3jaz1KU4hmZSoOyzyhkIcHn6EEg/PO+IzHUbNvGiVAtuUOqIcbcKUPMMLUlRGd0rSMHYE/KLLUmpb3uml2lRF1OpufpZZSfG8volI/uekZBrU/OVSrTVSn1FUzNOl5w4xurfYdBvt6YizrI4XXRc9SZqF3qnpaQQcqE24ozDoH9ICt0j1OPSPBxDsO6569apMUy3J1ciXtEuUpGnQkBKcb8sDb0xAXtwplBJcN6AyCDqkW3dv/INf/tGYuJ8q9KcRLgafAClVB50YOfCtRWn7KEaztqXdlLcpko+nS6zJtNrHkpKAD9xFfcZ+GSrqcTWaKW26skJbdQtWlD6BsDnooDr1Ax5QHY4H12Sq/D6my7LzfxMi0Jd9nUNSdOwOOeCMHPz8om7i0NoK3FpQkcyo4AjHxtm9qNN5RRK5KPYwHGWHBnkdlJGD05GO5R7V4lXDUZV+Zkqy6lh5LqXKi4pKUnOdQ7078umekBdPH+VemeF9R7kLUWVtOqCT/SFjOfMDOfaM/cKaxK0HiFSKpOq0SzbqkOLxsgLQpGo+g1ZPoOvKNdTssxOSb0nNNJdYfbU26hXJSVDBB+YMZpv7hBcNGqDrtDlXatTFEqaLQy62NzpUjmSBtkDf0JxCBpltaHG0uNrStCgFJUk5BB5EGGtHed3rTrxq053x54jIdOp3EKTSqUp0hdMukDCmmGX0jnncAef3i4uz7a9y0OYq1QuCSdl/jm2u7LzgU4ogqzqGSRzHPBiEuR2rJhX/AC/KBSgn+IcUOhP7sD6eL6x8eyoqW+OuBKij4ktMFsE+LRlerHpko+0TrjfZcxd9tsmmtpcqci4Vy6VLCdaVYC0ZOwzhJ3/LGd2bYvKRqIEvQa4zONKISWZV0KB8wUjy6jpEoaX4qXtJWdQHV96lVUmG1JkmRgnVjAWoflB5+fKMnstvz08hoKK35h0J1LVupSjzJ+Zi4LJ4T1qZ724btDqnGUrcZkXT3rj6wMp17nwlX9PM9cZ34PD/AIdXY1e9GfqNCm5eUYnG3nXFpTpAQdW+/XGPeA01KsNy0q1LNZDbSAhOTk4AwIx3xFqBql91uezlLk64EbH8CVaU8/QCNf1Vx9mlzb0q2px9DK1NISMlSgkkADrvGUqRw9u6brMmxOW9U2mXphCHnXGVBKUqUApSjjYAEkmEEtOWJTxSrMo9P31MybYXn82kFX3Jjx8Vm3HOG9fS0SFCRcUceQGT9gYk0fKdlmJyTek5ppLrD7am3UK5KSoYIPzBiEsdWBOy1Oveiz044GpdmeaW6s8kJ1DJPoOcbEmpuWlZJydmZhpqWbQXFurUAlKQM5J8oy9fnC25aDVJg0+mzNRphWVMPS6O8UEeSkjxAjqcYMfK37L4h3I0xSjL1VimoUMfHLW3LtAbZCVc8fpBMSh+cZruN33OZiVQoUuS1S8qvBw5uSV8ttW23kB6xYXZWlAmm12ewdTjzTQJGw0hR2P+f7COXxS4az8lR7fo1rUqYqCJVL7k1MIQNTjq+78St/0bDoBE37PlBqdAtCdl6vIOyU05PqWEOcyju2wD9dUB6uP845KcL6ilslKphbTJI8isE/UAj3imezy025xRkFrUAppl5aAep7sp/sTF88V7Yeu2zJmlSqm0zaVpelyskJK09PcEjfzjMr9oXlTZ4Nm3qw1MJVhCmpZasn9Kkgg8+hhA2LGTuOEm5J8UKwlYOl5aHkE9QpCT/fI9ovfgdIVen2SU11ueRPPTbjrgm1KK+gH4twPDHk40cO1XlKsT1NWy1VpVOhJdJCXm8k6CRyIJJB9TnnkB5eC8hZ9wWLIPmgUZ6elB3E0pcm2pzWnkokjJyMHPz8osSSp9NpravgpKUk0bqV3LSWx6k4A8h9IyW5bV823UdSKTWpGZSdIelkL335BaNjvjkfKOizRuKNxESjrNzTLT2EEzjjqWiM9S4dONoDVUtMMTLZcl32nkBRSVNrCgCDgjI6gx9IiHB+36rbNkS9Kq5Z+IQ6tYQ0rUEJUc6SepznltEviEkIQgEIQgITxcsCUvqhpQhxEpWJTK5CcIJCFHGULxzQrAB8tiOUZWqyJ6gVt6g3JKGm1Jo/hX/LdTnAWhR2Uk74jb8ci67Yt+6qaafcNJlqjL76Q6nxIJ5lCh4kH1SQYxXLfNvHVsuR8SXss/Tqjmo7dvH+MdAhScggpI9jHgnaaleVsYQr8vSL5q3Ztt5S1qoNyVqkgp2bUpLzaT548JxzOCeZjno7N0wVfv+Ic8pONg3IBBz8+8MV6rVU7TDebXGuXxHNrMT20ln2ZUmWJEwQ0R0VtFg8HOFVWv6cYqVTZfp9rg6lPHwuTmDjQ31AyDlX03i8bO4EWHb86mfmJaZrc2j8K6ksOJSck50ABJPLmDyi0UJShAQhISlIwABgAQt4XSdani51xzXiLc2sJHLr1n1+z40+TlqfIS8hJMpYlZZpLLLSeSEJACUj0AAEfeEIuueTMzOskIQgghCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEAhCEB//9k=" style="height:28pt;width:auto;display:block;" alt="Accurate"/>
+        <div>
+          <div class="pv-co-name">PT Cipta Piranti Sejahtera</div>
+          <div class="pv-co-sub">Accurate Online &nbsp;·&nbsp; Accurate POS &nbsp;·&nbsp; Official Partner &nbsp;·&nbsp; accurate.id</div>
+        </div>
+      </div>
+      <div class="pv-badge">
+        <div class="pv-badge-title">Penawaran Harga</div>
+        <div class="pv-badge-num">No. ${quoteNum}</div>
+        <div class="pv-badge-date">${dateStr}</div>
+      </div>
+    </div>
+    <div class="pv-strip"></div>
+    <div style="background:#FFF7ED;border:1pt solid #FCD34D;border-radius:4pt;padding:5pt 8pt;margin-bottom:6pt;font-size:7pt;color:#92400E;">
+      <strong>PENAWARAN SEMENTARA</strong> — Dokumen ini bersifat sementara dan akan digantikan oleh penawaran resmi melalui sistem Accurate.
+    </div>
+    <div class="pv-boxes">
+      <div class="pv-box">
+        <div class="pv-box-title">Ditujukan Kepada</div>
+        <div class="pv-box-name">${company}</div>
+        ${contact ? `<div class="pv-box-line">Attn: ${contact}</div>` : ''}
+        ${phone   ? `<div class="pv-box-line">Telp: ${phone}</div>` : ''}
+        ${email   ? `<div class="pv-box-line">${email}</div>` : ''}
+        ${address ? `<div class="pv-box-line">${address}</div>` : ''}
+      </div>
+      <div class="pv-box">
+        <div class="pv-box-title">Sales Representative</div>
+        <div class="pv-box-name">${bae}</div>
+        ${baePhone ? `<div class="pv-box-line">Telp: ${baePhone}</div>` : ''}
+        <div class="pv-box-line">PT Cipta Piranti Sejahtera</div>
+        <div class="pv-box-line">Durasi: ${durLabel}</div>
+        <div class="pv-box-line">Berlaku s/d: ${expStr}</div>
+      </div>
+    </div>
+
+    <div class="pv-table-title">Rincian Penawaran</div>
+    <table class="pv-table">
+      <thead>
+        <tr>
+          <th style="width:24pt">#</th>
+          <th>Produk / Layanan</th>
+          <th style="width:24pt;text-align:center">Qty</th>
+          <th style="width:60pt;text-align:right">Harga Normal</th>
+          <th style="width:36pt;text-align:center">Diskon</th>
+          <th style="width:60pt;text-align:right">Harga Jual</th>
+        </tr>
+      </thead>
+      <tbody>${tRows}</tbody>
+    </table>
+
+    <div class="pv-totals">
+      <div class="pv-totals-inner">
+        ${totSaved>0 ? `<div class="pv-trow"><span class="tl">Total Harga Normal</span><span style="text-decoration:line-through;color:#7A5060">${rp(totNorm)}</span></div>` : ''}
+        ${savingsBlock}
+        <div class="pv-trow grand-row">
+          <span class="tl">Total Investasi</span>
+          <span>${rp(totFinal)}</span>
+        </div>
+        ${monthlyEq}
+      </div>
+    </div>
+
+    <div class="pv-terms">
+      <div class="pv-terms-title">Ketentuan & Syarat</div>
+      <ul>${termsList}</ul>
+    </div>
+
+    <div class="pv-footer">
+      <div class="pv-footer-main">Terima kasih atas kepercayaan Anda kepada Accurate by CPS Soft</div>
+      <div class="pv-footer-sub">After Sales: <a href="https://docs.google.com/presentation/d/1dK5b38c4QlR9mwIqOBT_sr418jz5bL27/edit" target="_blank" style="color:rgba(255,255,255,.65)">Panduan After Sales CPS Soft</a></div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="pv-page2">
+      <div class="pv-p2-header">
+        <div class="pv-p2-title">Kenapa Pilih Accurate?</div>
+        <div class="pv-p2-sub">Ekosistem lengkap untuk bisnis Anda berkembang</div>
+      </div>
+      <div class="pv-strip"></div>
+
+      <div class="pv-feat-box">
+        <div class="pv-feat-hd ao">Accurate Online — Akuntansi & Bisnis Cloud</div>
+        <div class="pv-feat-grid">
+          <div><div class="pv-feat-item-name">Laporan Keuangan Otomatis</div><div class="pv-feat-item-desc">Laba Rugi, Neraca, Arus Kas real-time</div></div>
+          <div><div class="pv-feat-item-name">e-Faktur & e-Bupot</div><div class="pv-feat-item-desc">Terintegrasi DJP</div></div>
+          <div><div class="pv-feat-item-name">Inventori Multi-Gudang</div><div class="pv-feat-item-desc">FIFO/Average, multi-lokasi</div></div>
+          <div><div class="pv-feat-item-name">Cloud + Mobile</div><div class="pv-feat-item-desc">Akses kapan saja, di mana saja</div></div>
+          <div><div class="pv-feat-item-name">Harga & Diskon Fleksibel</div><div class="pv-feat-item-desc">Price list per customer/grup</div></div>
+          <div><div class="pv-feat-item-name">1.000+ Integrasi</div><div class="pv-feat-item-desc">Marketplace, e-payment, bank</div></div>
+        </div>
+      </div>
+
+      <div class="pv-feat-box">
+        <div class="pv-feat-hd pos">Accurate POS — Kasir Digital Terintegrasi</div>
+        <div class="pv-feat-grid">
+          <div><div class="pv-feat-item-name">Transaksi Cepat</div><div class="pv-feat-item-desc">Scanner ready, antrian kasir</div></div>
+          <div><div class="pv-feat-item-name">Multi-Payment</div><div class="pv-feat-item-desc">QRIS, kartu, e-wallet, tunai</div></div>
+          <div><div class="pv-feat-item-name">Kitchen Display (F&B)</div><div class="pv-feat-item-desc">Order otomatis ke dapur</div></div>
+          <div><div class="pv-feat-item-name">Auto-Sync ke Accurate Online</div><div class="pv-feat-item-desc">Data masuk akuntansi otomatis</div></div>
+          <div><div class="pv-feat-item-name">Dashboard Real-Time</div><div class="pv-feat-item-desc">Omzet & stok per outlet</div></div>
+          <div><div class="pv-feat-item-name">Multi-Outlet</div><div class="pv-feat-item-desc">Kelola semua cabang terpusat</div></div>
+        </div>
+      </div>
+
+      <div class="pv-steps-box">
+        <div class="pv-steps-title">Langkah Selanjutnya</div>
+        <ul class="pv-steps-list">
+          <li>1. Konfirmasi ketertarikan — kirim penawaran ini ke customer</li>
+          <li>2. Jadwalkan demo produk online / on-site (30–45 menit)</li>
+          <li>3. Sesuaikan paket & add-on sesuai kebutuhan bisnis</li>
+          <li>4. Proses pembayaran & aktivasi lisensi (1–2 hari kerja)</li>
+          <li>5. Training onboarding + dukungan dari tim After Sales</li>
+        </ul>
+      </div>
+
+      <div class="pv-footer" style="margin-top:12pt">
+        <div class="pv-footer-main">Siap bertumbuh bersama? Hubungi sales kami sekarang!</div>
+        <div class="pv-footer-sub">${bae}${baePhone ? ' · '+baePhone : ''} · PT Cipta Piranti Sejahtera · accurate.id</div>
+      </div>
+    </div>
+
+  `;
+
+  // slight delay to let DOM render then print
+  setTimeout(() => window.print(), 80);
+}
+
+/* ══════ UTILS ══════ */
+function rp(n) { return 'Rp '+Math.round(n).toLocaleString('id-ID'); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+/* INIT */
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('quote_date').value = today;
+  updateExpiry();
+  document.getElementById('validity_days')?.addEventListener('change', updateExpiry);
+});
+</script>
+</body>
+</html>

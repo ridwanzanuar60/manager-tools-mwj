@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manager Tools — MWJ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #080C14;
+    --surface:  #0D1320;
+    --border:   #1A2436;
+    --border2:  #243044;
+    --text:     #E8EDF5;
+    --muted:    #4A5D78;
+    --dim:      #2A3A52;
+    --blue:     #2A6FDB;
+    --blue-glow:#1E4FA0;
+    --teal:     #0FB4A0;
+    --amber:    #E8A020;
+    --rose:     #E0405A;
+    --mono:     'DM Mono', monospace;
+    --sans:     'Sora', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid bg */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(42,111,219,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(42,111,219,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orb */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 500px;
+    background: radial-gradient(ellipse, rgba(42,111,219,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 10px var(--blue);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .nav-brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .nav-brand strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .nav-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 72px 24px 56px;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--blue);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .hero h1 .accent {
+    background: linear-gradient(135deg, #5A9FFF 0%, #2A6FDB 50%, #0FB4A0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 300;
+    max-width: 420px;
+    margin: 0 auto;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.3s;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── MAIN ── */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── CATEGORY ── */
+  .category {
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .category:nth-child(1) { animation-delay: 0.4s; }
+  .category:nth-child(2) { animation-delay: 0.55s; }
+  .category:nth-child(3) { animation-delay: 0.7s; }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cat-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .cat-icon.blue  { background: rgba(42,111,219,0.15); border: 1px solid rgba(42,111,219,0.3); }
+  .cat-icon.teal  { background: rgba(15,180,160,0.12); border: 1px solid rgba(15,180,160,0.25); }
+  .cat-icon.amber { background: rgba(232,160,32,0.12); border: 1px solid rgba(232,160,32,0.25); }
+
+  .cat-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .cat-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--dim);
+    margin-left: auto;
+  }
+
+  /* ── TOOL GRID ── */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  /* ── TOOL CARD ── */
+  .tool-card {
+    display: block;
+    text-decoration: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 22px 18px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .tool-card.blue::before  { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+  .tool-card.teal::before  { background: linear-gradient(90deg, transparent, var(--teal), transparent); }
+  .tool-card.amber::before { background: linear-gradient(90deg, transparent, var(--amber), transparent); }
+
+  .tool-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .tool-card:hover::before { opacity: 1; }
+
+  .tool-card.blue:hover  { box-shadow: 0 12px 40px rgba(42,111,219,0.15); }
+  .tool-card.teal:hover  { box-shadow: 0 12px 40px rgba(15,180,160,0.12); }
+  .tool-card.amber:hover { box-shadow: 0 12px 40px rgba(232,160,32,0.10); }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .card-emoji {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .card-arrow {
+    font-size: 14px;
+    color: var(--dim);
+    transition: all 0.2s;
+    margin-top: 2px;
+  }
+
+  .tool-card:hover .card-arrow {
+    color: var(--text);
+    transform: translate(2px, -2px);
+  }
+
+  .card-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .card-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .card-tag.blue  { color: #5A9FFF; background: rgba(42,111,219,0.1); }
+  .card-tag.teal  { color: #30D4C0; background: rgba(15,180,160,0.1); }
+  .card-tag.amber { color: #F0BC50; background: rgba(232,160,32,0.1); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  footer p {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.06em;
+  }
+
+  footer span {
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-dot"></div>
+    <div class="nav-brand"><strong>Manager Tools</strong> — MWJ</div>
+  </div>
+  <div class="nav-tag">ridwanzanuar60</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Internal Toolkit · Metro West Java</div>
+  <h1>Tools untuk<br><span class="accent">Sales Manager</span></h1>
+  <p class="hero-sub">Kumpulan tools operasional untuk pipeline, forecast, deal management, dan coaching tim MWJ.</p>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- CATEGORY 1: Pipeline & Forecast -->
+  <div class="category">
+    <div class="cat-header">
+      <div class="cat-icon blue">📊</div>
+      <div class="cat-title">Pipeline & Forecast</div>
+      <div class="cat-count">2 tools</div>
+    </div>
+    <div class="tool-grid">
+
+      <a class="tool-card blue" href="forecast_calculator.html">
+        <div class="card-top">
+          <div class="card-emoji">🔢</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="card-name">Carry Over Calculator</div>
+        <div class="card-desc">Estimasi deals yang closing dari pipeline aktif — per region, per stage, per source. Support adjustment musiman.</div>
+        <span class="card-tag blue">FORECAST</span>
+      </a>
+
+      <a class="tool-card blue" href="radar-mwj_9.html">
+        <div class="card-top">
+          <div class="card-emoji">📡</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="card-name">RADAR MWJ</div>
+        <div class="card-desc">Dashboard monitoring pipeline dan performa tim secara real-time. Early warning system untuk manager.</div>
+        <span class="card-tag blue">MONITORING</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY 2: Sales Tools -->
+  <div class="category">
+    <div class="cat-header">
+      <div class="cat-icon teal">💼</div>
+      <div class="cat-title">Sales Tools</div>
+      <div class="cat-count">1 tool</div>
+    </div>
+    <div class="tool-grid">
+
+      <a class="tool-card teal" href="Generator_Penawaran_Accurate_v6_3.html">
+        <div class="card-top">
+          <div class="card-emoji">📄</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="card-name">Generator Penawaran</div>
+        <div class="card-desc">Buat surat penawaran Accurate Online & POS dengan cepat dan konsisten. Siap print atau kirim ke prospek.</div>
+        <span class="card-tag teal">QUOTATION</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY 3: SOP & Process -->
+  <div class="category">
+    <div class="cat-header">
+      <div class="cat-icon amber">📋</div>
+      <div class="cat-title">SOP & Process</div>
+      <div class="cat-count">1 tool</div>
+    </div>
+    <div class="tool-grid">
+
+      <a class="tool-card amber" href="sop_close_lost_v2.html">
+        <div class="card-top">
+          <div class="card-emoji">🔍</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="card-name">SOP Close Lost Reason</div>
+        <div class="card-desc">Panduan diagnosis alasan close lost untuk inbound leads. Bantu manager coaching BAE yang sering lose deal.</div>
+        <span class="card-tag amber">SOP</span>
+      </a>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Manager Tools MWJ · <span>Internal Use Only</span> · PT Cipta Piranti Sejahtera</p>
+</footer>
+
+</body>
+</html>

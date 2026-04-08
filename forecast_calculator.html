@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carry Over Calculator — MWJ</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0F172A; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  .header { background: linear-gradient(135deg, #1E3A8A, #1D4ED8); padding: 24px 32px; }
+  .header-label { color: #93C5FD; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .header h1 { color: #fff; font-size: 24px; font-weight: 700; }
+  .header p { color: #93C5FD; font-size: 13px; margin-top: 4px; }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 48px; }
+
+  .section-label { color: #94A3B8; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+  /* Region */
+  .region-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+  .region-btn { padding: 10px 8px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; font-size: 13px; background: #1E293B; color: #64748B; transition: all 0.15s; }
+  .region-btn.active { background: #2563EB; color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+
+  /* Adjustment */
+  .adj-box { background: #1E293B; border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; border: 1px solid #334155; }
+  .adj-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .adj-title { color: #E2E8F0; font-size: 13px; font-weight: 600; }
+  .adj-sub { color: #64748B; font-size: 12px; margin-left: 8px; }
+  .adj-badge { background: #0F172A; border-radius: 8px; padding: 4px 12px; color: #475569; font-size: 14px; font-weight: 700; }
+  .adj-badge.active { background: #4C1D95; color: #C4B5FD; }
+  input[type=range] { width: 100%; accent-color: #7C3AED; cursor: pointer; }
+  .adj-foot { display: flex; justify-content: space-between; margin-top: 4px; }
+  .adj-foot span { color: #475569; font-size: 11px; }
+
+  /* WR Reference */
+  .wr-box { background: #1E293B; border-radius: 14px; padding: 14px 20px; margin-bottom: 20px; border: 1px solid #334155; }
+  .wr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .wr-card { background: #0F172A; border-radius: 10px; padding: 10px 14px; }
+  .wr-card.out { border: 1px solid rgba(37,99,235,0.2); }
+  .wr-card.inb { border: 1px solid rgba(5,150,105,0.2); }
+  .wr-source { font-size: 11px; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.06em; }
+  .wr-source.out { color: #60A5FA; }
+  .wr-source.inb { color: #34D399; }
+  .wr-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .wr-stage { color: #64748B; font-size: 12px; }
+  .wr-val { color: #E2E8F0; font-size: 12px; font-weight: 600; }
+
+  /* Inputs */
+  .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .input-card { background: #1E293B; border-radius: 14px; padding: 16px; }
+  .input-card.out { border: 1px solid rgba(37,99,235,0.2); }
+  .input-card.inb { border: 1px solid rgba(5,150,105,0.2); }
+  .input-source { font-size: 12px; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.06em; }
+  .input-source.out { color: #60A5FA; }
+  .input-source.inb { color: #34D399; }
+  .input-sub { color: #475569; font-size: 10px; margin-bottom: 14px; line-height: 1.4; }
+  .input-row { margin-bottom: 10px; }
+  .input-row label { color: #94A3B8; font-size: 11px; display: block; margin-bottom: 4px; }
+  .input-row input { width: 100%; background: #0F172A; border: 1.5px solid #334155; border-radius: 8px; padding: 8px 12px; color: #F1F5F9; font-size: 16px; font-weight: 600; outline: none; transition: border 0.15s; }
+  .input-row input:focus { border-color: #2563EB; }
+  .input-card.inb .input-row input:focus { border-color: #059669; }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 10px; margin-bottom: 24px; }
+  .btn-calc { flex: 1; padding: 14px; border-radius: 12px; border: none; cursor: pointer; background: linear-gradient(135deg, #2563EB, #1D4ED8); color: #fff; font-size: 15px; font-weight: 700; box-shadow: 0 4px 16px rgba(37,99,235,0.4); transition: all 0.15s; }
+  .btn-calc:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.5); }
+  .btn-reset { padding: 14px 20px; border-radius: 12px; border: 1px solid #334155; background: #1E293B; color: #64748B; font-size: 14px; font-weight: 600; cursor: pointer; display: none; }
+
+  /* Result */
+  .result { background: #1E293B; border-radius: 16px; border: 1px solid #334155; overflow: hidden; display: none; }
+  .result-header { background: linear-gradient(135deg, #1E3A8A, #1D4ED8); padding: 20px 24px; text-align: center; }
+  .result-label { color: #93C5FD; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .result-num { color: #fff; font-size: 56px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+  .result-sub { color: #93C5FD; font-size: 13px; margin-top: 4px; }
+  .result-adj { margin-top: 10px; background: rgba(124,58,237,0.3); border-radius: 8px; padding: 4px 12px; display: inline-block; color: #C4B5FD; font-size: 12px; }
+  .result-body { padding: 16px 20px; }
+  .breakdown-label { color: #64748B; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { color: #475569; font-size: 11px; font-weight: 700; padding-bottom: 8px; letter-spacing: 0.05em; }
+  th:first-child, th:nth-child(2) { text-align: left; }
+  th:nth-child(n+3) { text-align: right; }
+  td { padding: 7px 0; border-top: 1px solid #1E293B; font-size: 12px; }
+  td:first-child { font-weight: 600; font-size: 11px; }
+  td.out-src { color: #60A5FA; }
+  td.inb-src { color: #34D399; }
+  td:nth-child(2) { color: #94A3B8; }
+  td:nth-child(3) { color: #E2E8F0; font-weight: 600; text-align: right; }
+  td:nth-child(4) { color: #64748B; text-align: right; }
+  td:nth-child(5) { color: #F1F5F9; font-weight: 700; text-align: right; font-size: 13px; }
+  .result-foot { background: #0F172A; padding: 12px 20px; border-top: 1px solid #1E293B; }
+  .result-foot p { color: #475569; font-size: 11px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">MWJ Forecast Tool</div>
+  <h1>Carry Over Calculator</h1>
+  <p>Input pipeline aktif post-demo → dapatkan estimasi carry over bulan ini</p>
+</div>
+
+<div class="container">
+
+  <!-- Region -->
+  <span class="section-label">Regional</span>
+  <div class="region-grid" id="regionGrid">
+    <button class="region-btn active" onclick="setRegion('Jakarta', this)">Jakarta</button>
+    <button class="region-btn" onclick="setRegion('Bodetabek', this)">Bodetabek</button>
+    <button class="region-btn" onclick="setRegion('Jawa Barat', this)">Jawa Barat</button>
+    <button class="region-btn" onclick="setRegion('APOS', this)">APOS</button>
+  </div>
+
+  <!-- Adjustment -->
+  <div class="adj-box">
+    <div class="adj-header">
+      <div><span class="adj-title">Adjustment Musiman</span><span class="adj-sub">e.g. Ramadan, promo</span></div>
+      <div class="adj-badge" id="adjBadge">0%</div>
+    </div>
+    <input type="range" min="0" max="50" step="5" value="0" id="adjSlider" oninput="updateAdj(this.value)">
+    <div class="adj-foot"><span>Normal (0%)</span><span>Max (-50%)</span></div>
+  </div>
+
+  <!-- WR Reference -->
+  <div class="wr-box">
+    <span class="section-label">Win Rate <span id="wrRegionLabel">Jakarta</span> <span id="wrAdjLabel" style="color:#7C3AED;display:none"></span></span>
+    <div class="wr-grid">
+      <div class="wr-card out">
+        <div class="wr-source out">Outbound</div>
+        <div class="wr-row"><span class="wr-stage">Demo Made</span><span class="wr-val" id="wr-out-demo">44.3%</span></div>
+        <div class="wr-row"><span class="wr-stage">Free Trial</span><span class="wr-val" id="wr-out-ft">67.5%</span></div>
+        <div class="wr-row"><span class="wr-stage">Sent Quotation</span><span class="wr-val" id="wr-out-sq">74.7%</span></div>
+      </div>
+      <div class="wr-card inb">
+        <div class="wr-source inb">Inbound</div>
+        <div class="wr-row"><span class="wr-stage">Demo Made</span><span class="wr-val" id="wr-inb-demo">64.3%</span></div>
+        <div class="wr-row"><span class="wr-stage">Free Trial</span><span class="wr-val" id="wr-inb-ft">69.1%</span></div>
+        <div class="wr-row"><span class="wr-stage">Sent Quotation</span><span class="wr-val" id="wr-inb-sq">73.0%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inputs -->
+  <span class="section-label">Pipeline Aktif (Last Activity ≤ 30 hari)</span>
+  <div class="input-grid">
+    <div class="input-card out">
+      <div class="input-source out">Outbound</div>
+      <div class="input-sub">No value, Referral Leads, Sales/Agent Leads</div>
+      <div class="input-row"><label>Demo Made</label><input type="number" min="0" id="in-out-demo" placeholder="0"></div>
+      <div class="input-row"><label>Free Trial</label><input type="number" min="0" id="in-out-ft" placeholder="0"></div>
+      <div class="input-row"><label>Sent Quotation</label><input type="number" min="0" id="in-out-sq" placeholder="0"></div>
+    </div>
+    <div class="input-card inb">
+      <div class="input-source inb">Inbound</div>
+      <div class="input-sub">Inbound CPS, Recycle Leads, Partnership</div>
+      <div class="input-row"><label>Demo Made</label><input type="number" min="0" id="in-inb-demo" placeholder="0"></div>
+      <div class="input-row"><label>Free Trial</label><input type="number" min="0" id="in-inb-ft" placeholder="0"></div>
+      <div class="input-row"><label>Sent Quotation</label><input type="number" min="0" id="in-inb-sq" placeholder="0"></div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="btn-row">
+    <button class="btn-calc" onclick="calculate()">Hitung Carry Over</button>
+    <button class="btn-reset" id="btnReset" onclick="reset()">Reset</button>
+  </div>
+
+  <!-- Result -->
+  <div class="result" id="result">
+    <div class="result-header">
+      <div class="result-label">Estimasi Carry Over — <span id="res-region">Jakarta</span></div>
+      <div class="result-num" id="res-total">0</div>
+      <div class="result-sub">deals yang diperkirakan closing</div>
+      <div class="result-adj" id="res-adj" style="display:none"></div>
+    </div>
+    <div class="result-body">
+      <div class="breakdown-label">Breakdown per Stage per Source</div>
+      <table>
+        <thead>
+          <tr><th>Source</th><th>Stage</th><th>Deals</th><th>Win Rate</th><th>Kontribusi</th></tr>
+        </thead>
+        <tbody id="res-tbody"></tbody>
+      </table>
+    </div>
+    <div class="result-foot">
+      <p>💡 Carry over = pipeline aktif yang ada sekarang. Tidak termasuk deals baru yang masuk bulan ini. Win rate berbasis data Des 2025–Feb 2026.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WR = {
+  "Jakarta":      { out: { demo: 44.3, ft: 67.5, sq: 74.7 }, inb: { demo: 64.3, ft: 69.1, sq: 73.0 } },
+  "Bodetabek":    { out: { demo: 66.0, ft: 75.0, sq: 76.1 }, inb: { demo: 57.6, ft: 64.5, sq: 65.4 } },
+  "Jawa Barat":   { out: { demo: 35.6, ft: 60.0, sq: 70.2 }, inb: { demo: 54.6, ft: 66.4, sq: 73.5 } },
+  "APOS":         { out: { demo: 30.8, ft: 55.0, sq: 64.7 }, inb: { demo: 45.9, ft: 56.2, sq: 64.9 } },
+};
+
+const STAGES = [
+  { key: "demo", label: "Demo Made" },
+  { key: "ft",   label: "Free Trial" },
+  { key: "sq",   label: "Sent Quotation" },
+];
+
+let currentRegion = "Jakarta";
+let currentAdj = 0;
+
+function setRegion(r, btn) {
+  currentRegion = r;
+  document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateWRDisplay();
+  hideResult();
+}
+
+function updateAdj(val) {
+  currentAdj = parseInt(val);
+  const badge = document.getElementById('adjBadge');
+  const adjLabel = document.getElementById('wrAdjLabel');
+  if (currentAdj > 0) {
+    badge.textContent = `-${currentAdj}%`;
+    badge.classList.add('active');
+    adjLabel.textContent = `(sudah dikurangi ${currentAdj}%)`;
+    adjLabel.style.display = 'inline';
+  } else {
+    badge.textContent = '0%';
+    badge.classList.remove('active');
+    adjLabel.style.display = 'none';
+  }
+  updateWRDisplay();
+  hideResult();
+}
+
+function updateWRDisplay() {
+  const wr = WR[currentRegion];
+  const adj = 1 - currentAdj / 100;
+  document.getElementById('wrRegionLabel').textContent = currentRegion;
+  for (const src of ['out','inb']) {
+    for (const { key } of STAGES) {
+      document.getElementById(`wr-${src}-${key}`).textContent = (wr[src][key] * adj).toFixed(1) + '%';
+    }
+  }
+}
+
+function getVal(id) { return parseInt(document.getElementById(id).value) || 0; }
+
+function calculate() {
+  const wr = WR[currentRegion];
+  const adj = 1 - currentAdj / 100;
+  let rows = [];
+  let total = 0;
+
+  for (const src of ['out','inb']) {
+    for (const { key, label } of STAGES) {
+      const count = getVal(`in-${src}-${key}`);
+      const rate = wr[src][key] * adj;
+      const contrib = count * rate / 100;
+      rows.push({ src, label, count, rate: rate.toFixed(1), contrib });
+      total += contrib;
+    }
+  }
+
+  const totalRounded = Math.round(total);
+  document.getElementById('res-total').textContent = totalRounded;
+  document.getElementById('res-region').textContent = currentRegion;
+
+  const adjEl = document.getElementById('res-adj');
+  if (currentAdj > 0) {
+    adjEl.textContent = `Adjustment -${currentAdj}% sudah diterapkan`;
+    adjEl.style.display = 'inline-block';
+  } else {
+    adjEl.style.display = 'none';
+  }
+
+  const tbody = document.getElementById('res-tbody');
+  tbody.innerHTML = '';
+  const filtered = rows.filter(r => r.count > 0);
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#475569;padding:16px 0;">Isi minimal satu stage di atas</td></tr>';
+  } else {
+    filtered.forEach(r => {
+      tbody.innerHTML += `
+        <tr>
+          <td class="${r.src}-src">${r.src === 'out' ? 'OUT' : 'IN'}</td>
+          <td>${r.label}</td>
+          <td style="text-align:right;color:#E2E8F0;font-weight:600">${r.count}</td>
+          <td style="text-align:right;color:#64748B">${r.rate}%</td>
+          <td style="text-align:right;color:#F1F5F9;font-weight:700;font-size:13px">~${Math.round(r.contrib)}</td>
+        </tr>`;
+    });
+  }
+
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('btnReset').style.display = 'block';
+}
+
+function reset() {
+  ['out','inb'].forEach(src => STAGES.forEach(({ key }) => {
+    document.getElementById(`in-${src}-${key}`).value = '';
+  }));
+  hideResult();
+}
+
+function hideResult() {
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('btnReset').style.display = 'none';
+}
+</script>
+</body>
+</html>

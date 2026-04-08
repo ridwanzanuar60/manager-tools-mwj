@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOP Close Lost Reason — Accurate Online MWJ</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B1E3E;
+    --navy-mid: #152D5A;
+    --accent: #F4A020;
+    --bg: #F0F2F7;
+    --white: #FFFFFF;
+    --text: #1A1A2E;
+    --muted: #8892A4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    padding: 40px 52px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(244,160,32,0.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    color: white;
+    line-height: 1.15;
+  }
+  .header h1 span { color: var(--accent); }
+  .header-sub {
+    margin-top: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+  }
+  .header-pills {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
+  }
+  .pill.accent { background: rgba(244,160,32,0.15); border-color: rgba(244,160,32,0.3); color: var(--accent); }
+
+  /* PHASE LABEL */
+  .phase-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 36px 52px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .phase-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #D1D9E6;
+  }
+
+  /* CARDS */
+  .cards-wrap {
+    padding: 0 52px;
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px 22px 18px;
+    border-left: 4px solid;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    transition: transform 0.18s, box-shadow 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+  }
+  .card-num {
+    position: absolute;
+    top: 14px; right: 18px;
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    opacity: 0.06;
+    line-height: 1;
+  }
+  .card-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: #4A5568;
+    line-height: 1.65;
+    margin-bottom: 14px;
+  }
+  .card-trigger {
+    background: rgba(0,0,0,0.035);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 11.5px;
+    color: #374151;
+    line-height: 1.55;
+  }
+  .card-trigger strong {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 13px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* color themes */
+  .c1 { border-color: #2563EB; } .c1 .dot { background: #2563EB; } .c1 .card-footer span { color: #2563EB; }
+  .c2 { border-color: #7C3AED; } .c2 .dot { background: #7C3AED; } .c2 .card-footer span { color: #7C3AED; }
+  .c3 { border-color: #6B7280; } .c3 .dot { background: #6B7280; } .c3 .card-footer span { color: #6B7280; }
+  .c4 { border-color: #F59E0B; } .c4 .dot { background: #F59E0B; } .c4 .card-footer span { color: #92400E; }
+  .c5 { border-color: #0891B2; } .c5 .dot { background: #0891B2; } .c5 .card-footer span { color: #0E7490; }
+  .c6 { border-color: #059669; } .c6 .dot { background: #059669; } .c6 .card-footer span { color: #065F46; }
+  .c7 { border-color: #DC2626; } .c7 .dot { background: #DC2626; } .c7 .card-footer span { color: #991B1B; }
+  .c8 { border-color: #D97706; } .c8 .dot { background: #D97706; } .c8 .card-footer span { color: #92400E; }
+  .c9 { border-color: #9CA3AF; } .c9 .dot { background: #9CA3AF; } .c9 .card-footer span { color: #4B5563; }
+  .c10{ border-color: #6D28D9; } .c10 .dot { background: #6D28D9; } .c10 .card-footer span { color: #4C1D95; }
+
+  /* MATRIX */
+  .matrix-wrap {
+    padding: 0 52px 52px;
+  }
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    font-size: 12px;
+  }
+  .matrix-table thead tr { background: var(--navy); }
+  .matrix-table th {
+    padding: 13px 16px;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    font-weight: 600;
+  }
+  .matrix-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid #F1F5F9;
+    vertical-align: middle;
+    line-height: 1.5;
+    color: #374151;
+  }
+  .matrix-table tr:last-child td { border-bottom: none; }
+  .matrix-table tr:hover td { background: #FAFBFD; }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .b-tele  { background: #DBEAFE; color: #1D4ED8; }
+  .b-sales { background: #D1FAE5; color: #065F46; }
+  .b-final { background: #F3F4F6; color: #374151; }
+  .b-admin { background: #EDE9FE; color: #5B21B6; }
+
+  td strong { color: var(--text); font-weight: 600; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--navy);
+    padding: 18px 52px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-text { font-size: 11px; color: rgba(255,255,255,0.35); }
+  .footer-brand { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .header, .phase-label, .cards-wrap, .matrix-wrap { padding-left: 20px; padding-right: 20px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .footer { padding: 16px 20px; flex-direction: column; gap: 6px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-eyebrow">Accurate Online · Metro West Java · HubSpot CRM</div>
+  <h1>SOP <span>Close Lost</span> Reason<br>— Inbound Leads</h1>
+  <div class="header-sub">Panduan pengisian reason saat menutup deal sebagai Close Lost di pipeline</div>
+  <div class="header-pills">
+    <div class="pill accent">10 Reason</div>
+    <div class="pill">Inbound Only</div>
+    <div class="pill">Sales Pipeline</div>
+    <div class="pill">2026</div>
+  </div>
+</div>
+
+<!-- PHASE 1: SEBELUM DEMO -->
+<div class="phase-label">Fase 1 — Sebelum Demo</div>
+<div class="cards-wrap">
+  <div class="cards-grid">
+
+    <div class="card c1">
+      <div class="card-num">01</div>
+      <span class="card-icon">📞</span>
+      <div class="card-title">Reapproach by Tele</div>
+      <div class="card-desc">Lead inbound yang sudah dikonfirmasi jadwal demo, namun prospek menghilang atau berulang kali meminta reschedule tanpa kepastian kapan.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        Tidak membalas konfirmasi jadwal, reschedule ≥2x, atau tidak ada meeting yang terkonfirmasi setelah follow-up aktif
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Next: Tim Tele akan recycle & kontak ulang</span></div>
+    </div>
+
+    <div class="card c2">
+      <div class="card-num">02</div>
+      <span class="card-icon">🚫</span>
+      <div class="card-title">Unqualified for Demo</div>
+      <div class="card-desc">Prospek menolak demo secara eksplisit, atau kebutuhan bisnis yang sudah jelas tidak bisa diakomodir oleh Accurate Online.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        "Ga butuh demo", sudah pakai sistem lain secara permanen, kebutuhan di luar kapabilitas produk
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Final · Tidak masuk recycle Tele</span></div>
+    </div>
+
+    <div class="card c3">
+      <div class="card-num">03</div>
+      <span class="card-icon">🗑</span>
+      <div class="card-title">Data Junk</div>
+      <div class="card-desc">Data yang masuk bukan target pasar Accurate Online — usaha mikro untuk bertahan hidup (pedagang kecil) atau mahasiswa yang mencoba-coba.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        Pedagang warung/kaki lima, mahasiswa tanpa bisnis nyata, pendaftar yang jelas tidak relevan
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Final · Hapus dari pipeline</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHASE 2: SETELAH DEMO -->
+<div class="phase-label">Fase 2 — Setelah Demo</div>
+<div class="cards-wrap">
+  <div class="cards-grid">
+
+    <div class="card c4">
+      <div class="card-num">04</div>
+      <span class="card-icon">💰</span>
+      <div class="card-title">Close Lost Budget</div>
+      <div class="card-desc">Demo berjalan, prospek tertarik, namun perusahaan belum memiliki anggaran yang cukup saat ini untuk berlangganan.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        "Budget-nya belum ada", "mungkin semester depan", anggaran sudah habis tahun ini
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Follow-up future: jadwalkan 3–6 bulan ke depan</span></div>
+    </div>
+
+    <div class="card c5">
+      <div class="card-num">05</div>
+      <span class="card-icon">👤</span>
+      <div class="card-title">Close Lost Authority</div>
+      <div class="card-desc">Tidak berhasil menjangkau decision maker. Kontak yang dimiliki tidak memiliki wewenang memutuskan pembelian.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        "Harus tanya bos dulu" — dan tidak ada progres, deal stuck di level staf saja
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Evaluasi: perlu ganti atau eskalasi contact</span></div>
+    </div>
+
+    <div class="card c6">
+      <div class="card-num">06</div>
+      <span class="card-icon">🔧</span>
+      <div class="card-title">Close Lost Fitur</div>
+      <div class="card-desc">Prospek tertarik dan sudah demo, namun tidak jadi berlangganan karena ada kebutuhan fitur spesifik yang belum tersedia.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        "Butuh fitur X yang belum ada", workflow tidak ter-cover, integrasi yang dibutuhkan tidak tersedia
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Catat ke feedback produk · Recycle jika fitur rilis</span></div>
+    </div>
+
+    <div class="card c7">
+      <div class="card-num">07</div>
+      <span class="card-icon">⚔️</span>
+      <div class="card-title">Close Lost Competitor</div>
+      <div class="card-desc">Prospek memilih produk kompetitor setelah proses demo dan evaluasi. Keputusan sudah final.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        Pilih Jurnal, Mekari, atau produk lain — harga, ekosistem, atau relasi kompetitor lebih sesuai
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Catat kompetitor · Monitor jika tidak puas</span></div>
+    </div>
+
+    <div class="card c8">
+      <div class="card-num">08</div>
+      <span class="card-icon">🛠</span>
+      <div class="card-title">Close Lost Implementator</div>
+      <div class="card-desc">Setuju dengan produk, tapi tidak jadi karena biaya implementasi dari mitra/implementator di luar kemampuan budget mereka.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        Biaya setup/implementasi terlalu mahal, permintaan implementasi tidak sesuai paket yang tersedia
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Koordinasi implementator · Tawarkan paket lain</span></div>
+    </div>
+
+    <div class="card c9">
+      <div class="card-num">09</div>
+      <span class="card-icon">📵</span>
+      <div class="card-title">Close Lost No Respon</div>
+      <div class="card-desc">Prospek sudah pernah didemo oleh sales, namun setelah demo menghilang dan tidak bisa dihubungi kembali. Ini tanggung jawab sales.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        Sudah follow-up ≥3x pasca-demo, tidak ada respons WA / telp / email selama ≥14 hari
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Evaluasi kualitas demo & follow-up sales</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHASE 3: ADMIN / SYSTEM -->
+<div class="phase-label">Admin / System</div>
+<div class="cards-wrap">
+  <div class="cards-grid" style="grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));">
+
+    <div class="card c10">
+      <div class="card-num">10</div>
+      <span class="card-icon">🔇</span>
+      <div class="card-title">Close Lost Void</div>
+      <div class="card-desc">Pembatalan bukan karena keputusan prospek, melainkan karena kesalahan data atau input yang tidak valid.</div>
+      <div class="card-trigger">
+        <strong>Kapan dipakai</strong>
+        Data double/duplikat, nomor tidak valid, deal dibuat by mistake, data test/percobaan
+      </div>
+      <div class="card-footer"><div class="dot"></div><span>Admin · Tidak masuk perhitungan reporting</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- QUICK REF TABLE -->
+<div class="phase-label">Quick Reference</div>
+<div class="matrix-wrap">
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Reason</th>
+        <th>Sudah Demo?</th>
+        <th>Trigger Utama</th>
+        <th>Next Action</th>
+        <th>PIC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>01</td>
+        <td><strong>Reapproach by Tele</strong></td>
+        <td>❌</td>
+        <td>Hilang / reschedule berulang</td>
+        <td>Tele recycle</td>
+        <td><span class="badge b-tele">Tele</span></td>
+      </tr>
+      <tr>
+        <td>02</td>
+        <td><strong>Unqualified for Demo</strong></td>
+        <td>❌</td>
+        <td>Tolak demo / tidak bisa diakomodir</td>
+        <td>Final</td>
+        <td><span class="badge b-final">Final</span></td>
+      </tr>
+      <tr>
+        <td>03</td>
+        <td><strong>Data Junk</strong></td>
+        <td>❌</td>
+        <td>Bukan target pasar</td>
+        <td>Hapus pipeline</td>
+        <td><span class="badge b-final">Final</span></td>
+      </tr>
+      <tr>
+        <td>04</td>
+        <td><strong>Budget</strong></td>
+        <td>✅</td>
+        <td>Anggaran belum cukup</td>
+        <td>Follow-up 3–6 bln</td>
+        <td><span class="badge b-sales">Sales</span></td>
+      </tr>
+      <tr>
+        <td>05</td>
+        <td><strong>Authority</strong></td>
+        <td>✅</td>
+        <td>Tidak dapat decision maker</td>
+        <td>Ganti contact</td>
+        <td><span class="badge b-sales">Sales</span></td>
+      </tr>
+      <tr>
+        <td>06</td>
+        <td><strong>Fitur</strong></td>
+        <td>✅</td>
+        <td>Kebutuhan fitur belum ada</td>
+        <td>Feedback produk</td>
+        <td><span class="badge b-sales">Sales</span></td>
+      </tr>
+      <tr>
+        <td>07</td>
+        <td><strong>Competitor</strong></td>
+        <td>✅</td>
+        <td>Pilih produk lain</td>
+        <td>Catat & monitor</td>
+        <td><span class="badge b-sales">Sales</span></td>
+      </tr>
+      <tr>
+        <td>08</td>
+        <td><strong>Implementator</strong></td>
+        <td>✅</td>
+        <td>Budget implementasi tidak cocok</td>
+        <td>Tawarkan paket lain</td>
+        <td><span class="badge b-sales">Sales</span></td>
+      </tr>
+      <tr>
+        <td>09</td>
+        <td><strong>No Respon</strong></td>
+        <td>✅</td>
+        <td>Hilang ≥14 hari pasca demo</td>
+        <td>Evaluasi follow-up</td>
+        <td><span class="badge b-sales">Sales</span></td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><strong>Void</strong></td>
+        <td>N/A</td>
+        <td>Data double / error / test</td>
+        <td>Hapus / merge</td>
+        <td><span class="badge b-admin">Admin</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  <div class="footer-text">Accurate Online · Metro West Java · Sales Pipeline SOP · 2026</div>
+  <div class="footer-brand">HubSpot CRM Guide</div>
+</div>
+
+</body>
+</html>
